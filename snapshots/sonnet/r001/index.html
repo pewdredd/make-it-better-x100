@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Зёрнышко — кофейня в Москве. Закажите заранее и заберите без очереди</title>
+<meta name="description" content="Кофейня «Зёрнышко»: соберите заказ на сайте, выберите время — напиток будет готов к вашему приходу. Каждый 10-й кофе в подарок.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="logo" href="#">Зёрнышко<span>.</span></a>
+  <nav>
+    <a href="#menu">Меню</a>
+    <a href="#visit">Как найти</a>
+    <a class="tel" href="tel:88000000000">8-800-000-00-00</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Кофейня · Москва · с 2011 года</p>
+    <h1>Кофе готов,<br>пока вы идёте.</h1>
+    <p class="lead">Соберите заказ за 20 секунд, выберите время — бариста сварит ровно к вашему приходу. Оплата на месте.</p>
+    <a class="btn" href="#menu">Собрать заказ</a>
+    <ul class="facts">
+      <li><b>8:00–21:00</b> по будням</li>
+      <li><b>10-й кофе</b> в подарок</li>
+      <li><b>от 90 ₽</b> выпечка</li>
+    </ul>
+  </div>
+  <div class="cup" aria-hidden="true">☕</div>
+</section>
+
+<main>
+<section id="menu" class="order">
+  <div class="list">
+    <h2>Меню</h2>
+    <p class="hint">Нажмите «+», чтобы добавить в заказ</p>
+    <div id="items"></div>
+  </div>
+
+  <aside class="cart" id="cart">
+    <h2>Ваш заказ</h2>
+    <ul id="lines"><li class="empty">Пока пусто. Начните с капучино?</li></ul>
+    <div class="total"><span>Итого</span><b id="sum">0 ₽</b></div>
+    <label>Когда заберёте
+      <select id="when">
+        <option>через 10 минут</option>
+        <option>через 20 минут</option>
+        <option>через 30 минут</option>
+        <option>через 45 минут</option>
+      </select>
+    </label>
+    <label>Имя для стакана
+      <input id="name" placeholder="Например, Аня" maxlength="30">
+    </label>
+    <button class="btn full" id="send" disabled>Оформить заказ</button>
+    <p class="note">Оплата на месте. Заказ хранится 15 минут после назначенного времени.</p>
+    <div class="done" id="done" hidden></div>
+  </aside>
+</section>
+
+<section class="loyal">
+  <div><h2>Каждый 10-й кофе — бесплатно</h2>
+  <p>Попросите карту у бариста. Девять отметок — и десятый напиток за наш счёт.</p></div>
+  <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="gift">★</i></div>
+</section>
+
+<section id="visit" class="visit">
+  <div><h2>Часы работы</h2>
+    <p>Пн–Пт: 8:00–21:00<br>Сб–Вс: 10:00–20:00<br>Без перерыва</p></div>
+  <div><h2>Как нас найти</h2>
+    <p>г. Москва, ул. Примерная, д. 1.<br>Вход со двора, 2 этаж, дверь направо. Ориентир — аптека.</p></div>
+</section>
+</main>
+
+<footer>© Зёрнышко, 2011–2026</footer>
+
+<script>
+const MENU = [
+  ["Кофе", [["Эспрессо",150,"30 мл"],["Американо",180,"250 мл"],["Капучино",220,"250 мл"],["Латте",240,"350 мл"],["Раф",260,"350 мл"]]],
+  ["Чай и выпечка", [["Чай (чёрный, зелёный)",120,"чайник"],["Круассан",140,"1 шт."],["Пирожок с капустой",90,"1 шт."]]]
+];
+const cart = {};
+const $ = id => document.getElementById(id);
+const rub = n => n.toLocaleString("ru-RU") + " ₽";
+const esc = s => s.replace(/[<>&"]/g, "");
+
+$("items").innerHTML = MENU.map(([cat, rows]) =>
+  `<h3>${cat}</h3>` + rows.map(([n,p,v]) =>
+    `<div class="row"><div><b>${n}</b><small>${v}</small></div><span>${rub(p)}</span>
+     <button class="add" data-n="${n}" data-p="${p}" aria-label="Добавить: ${n}">+</button></div>`).join("")).join("");
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button[data-n]");
+  if (b) { const k = b.dataset.n; cart[k] = cart[k] || {p:+b.dataset.p, q:0}; cart[k].q++; render(); }
+  const m = e.target.closest("button[data-m]");
+  if (m) { const k = m.dataset.m; cart[k].q += +m.dataset.d; if (cart[k].q <= 0) delete cart[k]; render(); }
+});
+
+function render() {
+  const keys = Object.keys(cart);
+  $("lines").innerHTML = keys.length ? keys.map(k =>
+    `<li><span>${k}</span><span class="qty"><button data-m="${k}" data-d="-1">−</button>${cart[k].q}<button data-m="${k}" data-d="1">+</button></span><b>${rub(cart[k].p*cart[k].q)}</b></li>`).join("")
+    : `<li class="empty">Пока пусто. Начните с капучино?</li>`;
+  $("sum").textContent = rub(keys.reduce((s,k)=>s+cart[k].p*cart[k].q,0));
+  $("send").disabled = !keys.length;
+  $("cart").classList.toggle("has", keys.length > 0);
+  $("done").hidden = true;
+}
+
+$("send").onclick = () => {
+  const keys = Object.keys(cart);
+  const name = esc($("name").value.trim()) || "гость";
+  const text = keys.map(k => `${k} ×${cart[k].q}`).join(", ");
+  const msg = `<b>Готово, ${name}!</b><br>Заказ: ${text}.<br>Заберите ${$("when").value} — всё будет горячим.`;
+  for (const k of keys) delete cart[k];
+  render();
+  $("done").innerHTML = msg;
+  $("done").hidden = false;
+};
+</script>
+</body>
+</html>

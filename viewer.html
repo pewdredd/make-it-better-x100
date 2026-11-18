@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сделай лучше ×100</title>
+<style>
+  :root {
+    --bg: #0d0f14; --panel: #161a22; --line: #262c38; --text: #f2f2f2; --muted: #8a93a6;
+    --accent: #EE8660; --good: #5fd39a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.45 "Montserrat", system-ui, sans-serif; height: 100vh; display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 16px; padding: 12px 18px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  h1 { font-size: 18px; margin: 0 12px 0 0; font-weight: 800; }
+  h1 b { color: var(--accent); }
+  .tabs button, .toggle { background: var(--panel); color: var(--text); border: 1px solid var(--line);
+         padding: 7px 14px; border-radius: 8px; cursor: pointer; font: inherit; font-weight: 600; }
+  .tabs button.on { background: var(--accent); border-color: var(--accent); color: #111; }
+  .toggle.on { border-color: var(--accent); color: var(--accent); }
+  .stats { display: flex; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 5px 12px; text-align: center; }
+  .stat .v { font-size: 17px; font-weight: 800; color: var(--accent); display: block; }
+  .stat .k { font-size: 11px; color: var(--muted); }
+  main { flex: 1; display: grid; grid-template-columns: 300px 1fr; min-height: 0; }
+  aside { border-right: 1px solid var(--line); overflow-y: auto; }
+  .row { padding: 8px 14px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .row:hover { background: var(--panel); }
+  .row.on { background: #232836; box-shadow: inset 3px 0 0 var(--accent); }
+  .row .t { font-weight: 700; }
+  .row .m { color: var(--muted); font-size: 12px; }
+  .badge { display: inline-block; background: rgba(238,134,96,.15); color: var(--accent);
+           border-radius: 5px; padding: 1px 7px; font-size: 11px; font-weight: 700; margin: 3px 4px 0 0; }
+  section { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .bar .title { font-size: 20px; font-weight: 800; }
+  .bar a { color: var(--accent); margin-left: auto; font-weight: 700; text-decoration: none; }
+  .frame { flex: 1; min-height: 0; background: #fff; }
+  iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .bottom { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); height: 170px; }
+  .summary { padding: 10px 16px; overflow-y: auto; color: #cfd5e2; white-space: pre-wrap; border-right: 1px solid var(--line); font-size: 13px; }
+  .chart { padding: 8px 12px; }
+  .chart .lg { font-size: 11px; color: var(--muted); }
+  .lg i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 4px 0 10px; vertical-align: -1px; }
+  svg { width: 100%; height: 135px; }
+  .empty { padding: 40px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>«Сделай лучше» <b>×100</b></h1>
+  <div class="tabs" id="tabs"></div>
+  <button class="toggle" id="onlyMs">Только вехи</button>
+  <div class="stats" id="stats"></div>
+</header>
+<main>
+  <aside id="list"></aside>
+  <section>
+    <div class="bar">
+      <span class="title" id="title"></span><span id="badges"></span>
+      <a id="open" target="_blank">Открыть в новой вкладке ↗</a>
+    </div>
+    <div class="frame"><iframe id="frame"></iframe></div>
+    <div class="bottom">
+      <div class="summary" id="summary"></div>
+      <div class="chart">
+        <div class="lg"><i style="background:var(--accent)"></i>цена круга по API, $<i style="background:var(--good)"></i>строк кода</div>
+        <svg id="chart" viewBox="0 0 600 135" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+const MODELS = new URLSearchParams(location.search).get("models")?.split(",") || ["sonnet", "opus"];
+const MS = [
+  ["f_img", "первая картинка"], ["f_js", "первый JavaScript"], ["f_mobile", "мобильная версия"],
+  ["f_anim", "первая анимация"], ["f_form", "первая форма"], ["f_canvas", "первый canvas/WebGL"],
+  ["f_video", "первое видео"], ["web_search", "первый поиск в интернете"],
+];
+const state = { model: null, round: 0, onlyMs: false, data: {} };
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(3, "0");
+const fmtTime = s => { const h = Math.floor(s / 3600), m = Math.round(s % 3600 / 60); return h ? `${h} ч ${m} мин` : `${m} мин`; };
+
+async function load() {
+  for (const m of MODELS) {
+    try {
+      const r = await fetch(`stats/${m}.jsonl?t=${Date.now()}`);
+      if (!r.ok) continue;
+      const rows = (await r.text()).split("\n").filter(Boolean).map(JSON.parse);
+      const seen = {};
+      rows.forEach(row => {
+        row.ms = [];
+        MS.forEach(([k, label]) => { if (row[k] && !seen[k]) { seen[k] = 1; if (row.round > 0) row.ms.push(label); } });
+      });
+      state.data[m] = rows;
+    } catch (e) {}
+  }
+  const have = MODELS.filter(m => state.data[m]);
+  if (!have.length) { $("list").innerHTML = '<div class="empty">Прогонов пока нет</div>'; return; }
+  if (!state.model) state.model = have[0];
+  $("tabs").innerHTML = have.map(m => `<button data-m="${m}">${m[0].toUpperCase() + m.slice(1)} 5.5</button>`).join(" ");
+  $("tabs").querySelectorAll("button").forEach(b => b.onclick = () => { state.model = b.dataset.m; state.round = 0; render(); });
+  render();
+}
+
+function render() {
+  const rows = state.data[state.model];
+  $("tabs").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.m === state.model));
+  $("onlyMs").classList.toggle("on", state.onlyMs);
+  const done = rows.filter(r => r.round > 0);
+  const sum = k => done.reduce((a, r) => a + (r[k] || 0), 0);
+  const last = rows[rows.length - 1];
+  $("stats").innerHTML = [
+    [done.length, "кругов"], [fmtTime(sum("duration_s")), "время"], ["$" + sum("cost_usd").toFixed(0), "по ценам API"],
+    [last.lines.toLocaleString("ru"), "строк кода"], [last.images, "картинок"], [last.videos, "видео"],
+    [sum("web_search"), "поисков в сети"],
+  ].map(([v, k]) => `<div class="stat"><span class="v">${v}</span><span class="k">${k}</span></div>`).join("");
+
+  const shown = rows.filter(r => !state.onlyMs || r.round === 0 || r.ms.length || r.round === last.round);
+  $("list").innerHTML = shown.map(r => `
+    <div class="row ${r.round === state.round ? "on" : ""}" data-r="${r.round}">
+      <div class="t">${r.round === 0 ? "Старт" : "Круг " + r.round}</div>
+      <div class="m">${r.lines} строк${r.round ? ` · ${r.tool_calls} вызовов · $${(r.cost_usd || 0).toFixed(2)}` : ""}</div>
+      ${r.ms.map(x => `<span class="badge">${x}</span>`).join("")}
+    </div>`).join("");
+  $("list").querySelectorAll(".row").forEach(el => el.onclick = () => { state.round = +el.dataset.r; render(); });
+  $("list").querySelector(".row.on")?.scrollIntoView({ block: "nearest" });
+
+  const r = rows.find(x => x.round === state.round) || rows[0];
+  const src = `snapshots/${state.model}/r${pad(r.round)}/index.html`;
+  if ($("frame").getAttribute("src") !== src) $("frame").setAttribute("src", src);
+  $("open").href = src;
+  $("title").textContent = r.round === 0 ? "Стартовый сайт" : `Круг ${r.round} из ${last.round}`;
+  $("badges").innerHTML = (r.ms || []).map(x => `<span class="badge">${x}</span>`).join("");
+  $("summary").textContent = r.round === 0 ? "Исходный уродливый сайт. С него начинают обе модели." : (r.summary || "");
+  drawChart(done, r.round);
+}
+
+function drawChart(rows, cur) {
+  if (!rows.length) { $("chart").innerHTML = ""; return; }
+  const W = 600, H = 130, n = Math.max(rows.length, 1);
+  const maxC = Math.max(...rows.map(r => r.cost_usd || 0), 0.01), maxL = Math.max(...rows.map(r => r.lines), 1);
+  const bw = W / n;
+  const bars = rows.map((r, i) => `<rect x="${i * bw + .5}" y="${H - (r.cost_usd || 0) / maxC * H}" width="${Math.max(bw - 1, 1)}"
+      height="${(r.cost_usd || 0) / maxC * H}" fill="#EE8660" opacity="${r.round === cur ? 1 : .55}"/>`).join("");
+  const pts = rows.map((r, i) => `${i * bw + bw / 2},${H - r.lines / maxL * H}`).join(" ");
+  $("chart").innerHTML = bars + `<polyline points="${pts}" fill="none" stroke="#5fd39a" stroke-width="2.5"/>`;
+}
+
+$("onlyMs").onclick = () => { state.onlyMs = !state.onlyMs; render(); };
+document.addEventListener("keydown", e => {
+  const rows = state.data[state.model]; if (!rows) return;
+  const shown = rows.filter(r => !state.onlyMs || r.round === 0 || r.ms.length || r.round === rows[rows.length - 1].round);
+  const i = shown.findIndex(r => r.round === state.round);
+  if (e.key === "ArrowDown" || e.key === "ArrowRight") { state.round = shown[Math.min(i + 1, shown.length - 1)].round; render(); e.preventDefault(); }
+  if (e.key === "ArrowUp" || e.key === "ArrowLeft") { state.round = shown[Math.max(i - 1, 0)].round; render(); e.preventDefault(); }
+});
+load();
+setInterval(() => { const m = state.model, r = state.round; load().then(() => { state.model = m; state.round = r; }); }, 60000);
+</script>
+</body>
+</html>

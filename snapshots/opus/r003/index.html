@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кофейня «Зёрнышко» — закажите кофе заранее и заберите без очереди</title>
+<meta name="description" content="Кофейня «Зёрнышко» на ул. Примерной, 1. Соберите заказ на сайте за 20 секунд и заберите без очереди. С 2011 года.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="logo" href="#">Зёрнышко<span>с 2011</span></a>
+  <span class="status" id="status">…</span>
+</header>
+
+<section class="hero">
+  <p class="eyebrow">Кофейня на Примерной, 1</p>
+  <h1>Ваш кофе готов<br>к&nbsp;<em>вашему приходу</em></h1>
+  <p class="lead">Нажмите на напитки ниже, выберите время — бариста сварит заранее. Никакой очереди, оплата на месте.</p>
+  <a class="btn" href="#menu">Собрать заказ ↓</a>
+</section>
+
+<!-- для вернувшихся: прошлый заказ в одно касание -->
+<section class="usual" id="usual" hidden>
+  <div class="ticket">
+    <p class="eyebrow" id="usualHi">С возвращением</p>
+    <h1>Как <em>обычно?</em></h1>
+    <ul id="usualLines"></ul>
+    <p class="usual-total"><span id="usualWhen"></span><b id="usualSum"></b></p>
+    <a class="btn wide big" id="usualSend" href="#">Заказать в одно касание</a>
+    <div class="usual-alt">
+      <button type="button" id="usualEdit">Изменить заказ</button>
+      <a href="#menu" id="usualNew">Хочу другое ↓</a>
+    </div>
+    <p class="note" id="usualNote">Откроется SMS с готовым текстом — останется нажать «Отправить». Оплата на месте.</p>
+  </div>
+</section>
+
+<section class="menu" id="menu">
+  <h2>Меню <small>видно, что внутри · нажмите, чтобы добавить</small></h2>
+  <ul class="items" id="items">
+    <li><button data-name="Эспрессо" data-price="150"><b>Эспрессо</b><i>маленький · только кофе</i><span>150 ₽</span></button></li>
+    <li><button data-name="Американо" data-price="180"><b>Американо</b><i>средний · эспрессо + горячая вода</i><span>180 ₽</span></button></li>
+    <li><button data-name="Капучино" data-price="220"><b>Капучино</b><i>средний · поровну кофе, молока и пены</i><span>220 ₽</span></button></li>
+    <li><button data-name="Латте" data-price="240"><b>Латте</b><i>большой · много молока, мягкий вкус</i><span>240 ₽</span></button></li>
+    <li><button data-name="Раф" data-price="260"><b>Раф</b><i>большой · кофе, взбитый со сливками</i><span>260 ₽</span></button></li>
+    <li><button data-name="Чай" data-price="120"><b>Чай</b><i>чёрный или зелёный, чайник</i><span>120 ₽</span></button></li>
+    <li><button data-name="Круассан" data-price="140"><b>Круассан</b><i>1 шт.</i><span>140 ₽</span></button></li>
+    <li><button data-name="Пирожок с капустой" data-price="90"><b>Пирожок с капустой</b><i>1 шт.</i><span>90 ₽</span></button></li>
+  </ul>
+</section>
+
+<section class="loyal">
+  <div class="cups" aria-hidden="true">☕☕☕☕☕☕☕☕☕<b>🎁</b></div>
+  <p><strong>Каждый 10-й кофе — в подарок.</strong> Попросите карту у бариста при первом заказе.</p>
+</section>
+
+<section class="info">
+  <div>
+    <h3>Часы работы</h3>
+    <p>Пн–Пт 8:00–21:00<br>Сб–Вс 10:00–20:00<br>Без перерыва</p>
+  </div>
+  <div>
+    <h3>Как найти</h3>
+    <p>Москва, ул. Примерная, 1.<br>Вход со двора, 2 этаж, дверь направо.<br>Ориентир — аптека.</p>
+  </div>
+  <div>
+    <h3>Телефон</h3>
+    <p><a href="tel:88000000000">8-800-000-00-00</a></p>
+  </div>
+</section>
+
+<footer>© Кофейня «Зёрнышко», 2011–2026</footer>
+
+<!-- липкая корзина -->
+<div class="bar" id="bar" hidden>
+  <button class="bar-open" id="barOpen"><span id="barCount">0</span> · <span id="barSum">0 ₽</span><b>Оформить →</b></button>
+</div>
+
+<!-- оформление -->
+<dialog id="checkout">
+  <form method="dialog" class="sheet">
+    <button class="x" value="close" aria-label="Закрыть">×</button>
+    <h2>Ваш заказ</h2>
+    <ul id="lines"></ul>
+    <p class="total">Итого: <b id="total">0 ₽</b> <small>оплата на месте</small></p>
+    <h3>Когда заберёте?</h3>
+    <div class="slots" id="slots"></div>
+    <p class="note">Заказ ждёт вас 15 минут после выбранного времени.</p>
+    <a class="btn wide" id="send" href="#">Отправить заказ по SMS</a>
+    <a class="btn ghost wide" id="call" href="tel:88000000000">Или позвонить и продиктовать</a>
+  </form>
+</dialog>
+
+<script>
+const cart = {};
+const $ = id => document.getElementById(id);
+const rub = n => n.toLocaleString('ru') + ' ₽';
+let slot = null;
+
+// Рисованное меню: каждый напиток — стакан в разрезе, видно, из чего он состоит
+const COL = { esp: '#3b2214', crema: '#c08045', water: '#6a3f24', milk: '#f1e2cc', foam: '#fffaf2', cream: '#dcb98f', tea: '#c8711f' };
+const DRINKS = {
+  'Эспрессо':  { w: 34, h: 26, cup: 1, l: [['esp', .62], ['crema', .14]] },
+  'Американо': { w: 44, h: 50, l: [['water', .76], ['crema', .06]] },
+  'Капучино':  { w: 50, h: 42, cup: 1, l: [['esp', .28], ['milk', .3], ['foam', .3]] },
+  'Латте':     { w: 40, h: 66, l: [['esp', .18], ['milk', .6], ['foam', .12]] },
+  'Раф':       { w: 40, h: 66, l: [['cream', .74], ['foam', .12]] },
+  'Чай':       { w: 42, h: 46, bag: 1, l: [['tea', .78]] },
+};
+let artId = 0;
+function art(name, mini) {
+  const id = 'cl' + (artId++), d = DRINKS[name], ink = '#2a1d15';
+  let g = '';
+  if (d) {
+    const base = d.cup ? 86 : 90, top = base - d.h, bw = d.w * .76;
+    const glass = `M${50 - d.w / 2} ${top}L${50 + d.w / 2} ${top}L${50 + bw / 2} ${base}L${50 - bw / 2} ${base}Z`;
+    let acc = 0, layers = '';
+    d.l.forEach(([c, f]) => {
+      const hh = f * d.h; acc += hh;
+      layers += `<rect x="0" y="${base - acc}" width="100" height="${hh + .5}" fill="${COL[c]}"/>`;
+    });
+    g += `<ellipse cx="50" cy="${d.cup ? 93 : 92}" rx="${d.w * .62}" ry="3.5" fill="${ink}" opacity=".12"/>`;
+    if (d.cup) g += `<ellipse cx="50" cy="89" rx="${d.w * .78}" ry="4" fill="#fff" stroke="${ink}" stroke-width="2"/>` +
+      `<path d="M${50 + d.w / 2 - 3} ${top + d.h * .25}c11 0 11 ${d.h * .45} 0 ${d.h * .5}" fill="none" stroke="${ink}" stroke-width="2.4"/>`;
+    g += `<clipPath id="${id}"><path d="${glass}"/></clipPath>` +
+      `<path d="${glass}" fill="#fff" opacity=".7"/>` +
+      `<g clip-path="url(#${id})"><g class="fill">${layers}</g></g>` +
+      `<path d="${glass}" fill="none" stroke="${ink}" stroke-width="2.2" stroke-linejoin="round"/>` +
+      `<path d="M${50 - d.w / 2 + 5} ${top + 5}L${50 - bw / 2 + 4} ${base - 6}" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>`;
+    if (d.bag) g += `<path d="M${50 + 6} ${top + 14}L${50 + d.w / 2 + 2} ${top - 2}l2 14" fill="none" stroke="${ink}" stroke-width="1.2"/><rect x="${50 + d.w / 2 - 2}" y="${top + 12}" width="10" height="9" rx="1.5" fill="#e9c46a" stroke="${ink}" stroke-width="1.2"/>`;
+    if (!mini) g += `<g class="steam" fill="none" stroke="${ink}" stroke-width="1.8" stroke-linecap="round" opacity=".35">` +
+      `<path d="M44 ${top - 6}c-4-5 4-8 0-14"/><path d="M56 ${top - 4}c-4-5 4-8 0-14"/></g>`;
+  } else if (name === 'Круассан') {
+    g = `<ellipse cx="50" cy="86" rx="34" ry="4" fill="${ink}" opacity=".12"/><g stroke="#9a5a22" stroke-width="2" fill="#dc9b4f">` +
+      [[24, 74, 9, 7, -35], [76, 74, 9, 7, 35], [35, 66, 13, 10, -18], [65, 66, 13, 10, 18], [50, 63, 15, 13, 0]]
+        .map(([x, y, rx, ry, r]) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" transform="rotate(${r} ${x} ${y})"/>`).join('') +
+      `</g><path d="M44 57q6-3 12 0" stroke="#f6d39b" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  } else {
+    g = `<ellipse cx="50" cy="86" rx="34" ry="4" fill="${ink}" opacity=".12"/>` +
+      `<path d="M16 76Q50 38 84 76Q50 90 16 76Z" fill="#d4914a" stroke="#9a5a22" stroke-width="2" stroke-linejoin="round"/>` +
+      `<path d="M24 68q4 3 7-1q4 3 7-2q4 3 8-2q4 3 8 0q4 3 8 2q4 3 8 3" fill="none" stroke="#9a5a22" stroke-width="1.6"/>` +
+      `<path d="M34 64q12-8 26-6" stroke="#f3cf95" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  }
+  return `<svg class="art${mini ? ' mini' : ''}" viewBox="0 0 100 100" aria-hidden="true">${g}</svg>`;
+}
+document.querySelectorAll('#items button').forEach((b, i) => {
+  b.insertAdjacentHTML('afterbegin', art(b.dataset.name));
+  b.style.setProperty('--d', i * 70 + 'ms');
+});
+
+// статус «открыто»
+function hours(d) { const w = d.getDay(); return (w === 0 || w === 6) ? [10, 20] : [8, 21]; }
+(function () {
+  const now = new Date(), [o, c] = hours(now), h = now.getHours() + now.getMinutes() / 60;
+  const s = $('status');
+  if (h >= o && h < c) { s.textContent = '● Открыто до ' + c + ':00'; s.classList.add('open'); }
+  else { s.textContent = '● Закрыто · откроемся в ' + (h >= c ? hours(new Date(now.getTime() + 864e5))[0] : o) + ':00'; }
+})();
+
+document.querySelectorAll('#items button').forEach(b => {
+  b.addEventListener('click', () => {
+    const n = b.dataset.name;
+    cart[n] = cart[n] || { price: +b.dataset.price, qty: 0 };
+    cart[n].qty++;
+    b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+    render();
+  });
+});
+
+function render() {
+  let count = 0, sum = 0;
+  $('lines').innerHTML = '';
+  for (const [n, it] of Object.entries(cart)) {
+    if (!it.qty) continue;
+    count += it.qty; sum += it.qty * it.price;
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="nm">${art(n, 1)}${n}</span><span class="q"><button type="button" data-d="-1">−</button>${it.qty}<button type="button" data-d="1">+</button></span><span>${rub(it.qty * it.price)}</span>`;
+    li.querySelectorAll('button').forEach(x => x.onclick = () => { it.qty += +x.dataset.d; render(); });
+    $('lines').append(li);
+  }
+  document.querySelectorAll('#items button').forEach(b => {
+    const q = cart[b.dataset.name]?.qty || 0;
+    b.dataset.qty = q || '';
+  });
+  $('bar').hidden = !count;
+  $('barCount').textContent = count + ' шт.';
+  $('barSum').textContent = rub(sum);
+  $('total').textContent = rub(sum);
+  if (!count && $('checkout').open) $('checkout').close();
+  updateSend(sum);
+}
+
+function slotTimes() {
+  const now = new Date(), [o, c] = hours(now);
+  let t = new Date(now); t.setSeconds(0, 0);
+  t.setMinutes(Math.ceil((t.getMinutes() + 10) / 5) * 5);
+  if (t.getHours() < o) t.setHours(o, 0);
+  const opts = [];
+  for (let i = 0; i < 4; i++) {
+    const x = new Date(t.getTime() + [0, 10, 20, 40][i] * 6e4);
+    if (x.getHours() + x.getMinutes() / 60 < c - 0.25) opts.push(x);
+  }
+  return opts;
+}
+
+function buildSlots() {
+  const box = $('slots'); box.innerHTML = '';
+  const opts = slotTimes();
+  if (!opts.length) { box.innerHTML = '<p class="note">Сегодня уже не успеем — позвоните, договоримся на завтра.</p>'; slot = null; return; }
+  opts.forEach((x, i) => {
+    const label = x.toTimeString().slice(0, 5);
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = i === 0 ? 'К ' + label + ' · быстрее всего' : 'К ' + label;
+    b.onclick = () => { slot = label; box.querySelectorAll('button').forEach(y => y.classList.toggle('on', y === b)); updateSend(); };
+    box.append(b);
+    if (i === 0) b.click();
+  });
+}
+
+const smsHref = (items, when) => 'sms:88000000000?&body=' + encodeURIComponent(
+  `Заказ в Зёрнышко: ${items.map(([n, q]) => `${n} ×${q}`).join(', ')}. Заберу ${when ? 'к ' + when : 'по договорённости'}.`);
+const cartItems = () => Object.entries(cart).filter(([, i]) => i.qty).map(([n, i]) => [n, i.qty]);
+
+function updateSend() { $('send').href = smsHref(cartItems(), slot); }
+
+// «Как обычно»: запоминаем отправленный заказ на этом устройстве
+const KEY = 'zr-usual';
+function remember(items) {
+  if (!items.length) return;
+  let prev = null; try { prev = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  const sig = JSON.stringify(items);
+  const n = prev && JSON.stringify(prev.items) === sig ? prev.n + 1 : 1;
+  try { localStorage.setItem(KEY, JSON.stringify({ items, n, at: Date.now() })); } catch (e) {}
+}
+$('send').addEventListener('click', () => remember(cartItems()));
+$('call').addEventListener('click', () => remember(cartItems()));
+
+function openCheckout() { buildSlots(); render(); $('checkout').showModal(); }
+$('barOpen').onclick = openCheckout;
+
+(function usual() {
+  let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  if (!saved || !saved.items) return;
+  const price = {};
+  document.querySelectorAll('#items button').forEach(b => price[b.dataset.name] = +b.dataset.price);
+  const items = saved.items.filter(([n, q]) => price[n] && q > 0); // позиции, которых больше нет в меню, пропускаем
+  if (!items.length) return;
+
+  const h = new Date().getHours();
+  $('usualHi').textContent = (h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер') +
+    (saved.n > 1 ? ` · вы брали это ${saved.n} ${[2, 3, 4].includes(saved.n % 10) && ![12, 13, 14].includes(saved.n % 100) ? 'раза' : 'раз'}` : ' · с возвращением');
+  let sum = 0;
+  items.forEach(([n, q]) => {
+    sum += price[n] * q;
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="nm">${art(n, 1)}${n}${q > 1 ? ' <i>×' + q + '</i>' : ''}</span><span>${rub(price[n] * q)}</span>`;
+    $('usualLines').append(li);
+  });
+  $('usualSum').textContent = rub(sum);
+
+  const first = slotTimes()[0];
+  if (first) {
+    const t = first.toTimeString().slice(0, 5);
+    $('usualWhen').textContent = 'Будет готово к ' + t;
+    $('usualSend').textContent = 'Заказать к ' + t;
+    $('usualSend').href = smsHref(items, t);
+    $('usualSend').onclick = () => remember(items);
+  } else {
+    $('usualWhen').textContent = 'Сегодня уже не успеем';
+    $('usualSend').textContent = 'Позвонить и договориться на завтра';
+    $('usualSend').href = 'tel:88000000000';
+    $('usualNote').hidden = true;
+  }
+
+  $('usualEdit').onclick = () => {
+    items.forEach(([n, q]) => cart[n] = { price: price[n], qty: q });
+    openCheckout();
+  };
+  document.querySelector('.hero').hidden = true;
+  $('usual').hidden = false;
+})();
+$('checkout').addEventListener('click', e => { if (e.target === $('checkout')) $('checkout').close(); });
+</script>
+</body>
+</html>

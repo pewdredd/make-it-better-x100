@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Зёрнышко — кофейня в Москве. Закажите заранее и заберите без очереди</title>
+<meta name="description" content="Кофейня «Зёрнышко»: соберите заказ на сайте, выберите время — напиток будет готов к вашему приходу. Каждый 10-й кофе в подарок.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="logo" href="#">Зёрнышко<span>.</span></a>
+  <nav>
+    <a href="#menu">Меню</a>
+    <a href="#visit">Как найти</a>
+    <a class="tel" href="tel:88000000000">8-800-000-00-00</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Кофейня · Москва · с 2011 года</p>
+    <p class="status" id="status"></p>
+    <h1>Кофе готов,<br>пока вы идёте.</h1>
+    <p class="lead">Соберите заказ за 20 секунд, выберите время — бариста сварит ровно к вашему приходу. Оплата на месте.</p>
+    <div class="usual" id="usual" hidden>
+      <small id="usualHi"></small>
+      <b id="usualList"></b>
+      <button class="btn" id="usualGo" type="button"></button>
+    </div>
+    <a class="btn" href="#menu" id="heroBtn">Собрать заказ</a>
+    <ul class="facts">
+      <li><b>8:00–21:00</b> по будням</li>
+      <li><b>10-й кофе</b> в подарок</li>
+      <li><b>от 90 ₽</b> выпечка</li>
+    </ul>
+  </div>
+  <div class="pick" id="pick">
+    <h2>Не знаете, что взять?</h2>
+    <p class="pq">Каким должно быть утро — точнее, сейчас?</p>
+    <div class="moods" id="moods" role="group" aria-label="Настроение"></div>
+    <div class="rec" id="rec" aria-live="polite"></div>
+  </div>
+</section>
+
+<main>
+<section id="menu" class="order">
+  <div class="list">
+    <h2>Меню</h2>
+    <p class="hint">Нажмите «+» на карточке — количество можно менять прямо там</p>
+    <div class="filters" id="filters" role="group" aria-label="Подобрать по вкусу"></div>
+    <div id="items"></div>
+  </div>
+
+  <aside class="cart" id="cart">
+    <div class="livecup" id="livecup">
+      <div class="lc" aria-hidden="true">
+        <span class="steam"><i></i><i></i><i></i></span>
+        <span class="lcl"></span>
+        <span class="lcb"><span class="lf" id="lcf"><b class="foam"></b><b class="milk"></b><b class="esp"></b></span><span class="lcs"><em id="lcn">Имя</em></span></span>
+      </div>
+      <div><h2>Ваш заказ</h2><p class="lcm" id="lcm">Стакан ждёт: добавьте напиток</p></div>
+    </div>
+    <ul id="lines"><li class="empty">Пока пусто. Начните с капучино?</li></ul>
+    <div class="addons" id="addons"></div>
+    <div class="upsell" id="upsell" aria-live="polite"></div>
+    <div class="crew" id="crew"></div>
+    <div class="total"><span>Итого</span><b id="sum">0 ₽</b></div>
+    <div class="when" role="radiogroup" aria-label="Когда заберёте">
+      <span class="wl">Когда будете у нас?</span>
+      <div class="slots" id="slots"></div>
+    </div>
+    <label>Имя для стакана
+      <input id="name" placeholder="Например, Аня" maxlength="30">
+    </label>
+    <button class="btn full" id="send" disabled>Оформить заказ</button>
+    <p class="note">Оплата на месте. Заказ хранится 15 минут после назначенного времени.</p>
+    <div class="done" id="done" hidden></div>
+  </aside>
+</section>
+
+<section class="loyal" id="loyal">
+  <div><h2>Каждый 10-й кофе — бесплатно</h2>
+  <p id="loyalText">Карта хранится прямо на сайте — ничего просить не нужно. Добавьте кофе в заказ и смотрите, как заполняется карта.</p>
+  <button class="reset" id="loyalReset" hidden>Сбросить карту</button></div>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+</section>
+
+<section id="visit" class="visit">
+  <div class="hours"><h2>Часы работы</h2>
+    <p>Пн–Пт: 8:00–21:00<br>Сб–Вс: 10:00–20:00<br>Без перерыва</p>
+    <p class="addr">г. Москва, ул. Примерная, д. 1</p>
+    <button class="btn ghost copy" id="copyAddr" type="button">Скопировать адрес</button></div>
+  <div class="route"><h2>Как нас найти: 4 шага от улицы</h2>
+    <p class="rsub">Вход спрятан во дворе — зато у нас тихо. Не пропустите арку.</p>
+    <ol class="steps" id="steps">
+      <li><span class="ic">🚶</span><div><b>Дом 1, арка справа от аптеки</b><small>Вывеска «Аптека» с зелёным крестом — ваш ориентир</small></div></li>
+      <li><span class="ic">🌳</span><div><b>Пройдите через двор — 30 шагов</b><small>Прямо, мимо велопарковки</small></div></li>
+      <li><span class="ic">🪜</span><div><b>Подъезд с жёлтой дверью, 2 этаж</b><small>Лифта нет, лестница пахнет кофе</small></div></li>
+      <li><span class="ic">☕</span><div><b>Дверь направо — вы пришли</b><small>Назовите имя на стойке: стакан уже подписан</small></div></li>
+    </ol></div>
+</section>
+</main>
+
+<a class="bar" id="bar" href="#cart" hidden><span id="barQ">0</span><span class="bt">Ваш заказ · <b id="barS">0 ₽</b></span><span class="go">Оформить →</span></a>
+
+<footer>© Зёрнышко, 2011–2026</footer>
+
+<script>
+const MENU = [
+  ["Выгодные наборы", [["Завтрак: капучино + круассан",320,"выгода 40 ₽"],["Перекус: американо + пирожок",240,"выгода 30 ₽"]]],
+  ["Кофе", [["Эспрессо",150,"30 мл"],["Американо",180,"250 мл"],["Капучино",220,"250 мл"],["Латте",240,"350 мл"],["Раф",260,"350 мл"]]],
+  ["Чай и выпечка", [["Чай (чёрный, зелёный)",120,"чайник"],["Круассан",140,"1 шт."],["Пирожок с капустой",90,"1 шт."]]]
+];
+const cart = {};
+const COFFEE = new Set(["Эспрессо","Американо","Капучино","Латте","Раф"]);
+const BUNDLE = new Set(["Завтрак: капучино + круассан","Перекус: американо + пирожок"]);
+let stamps = Math.min(9, Math.max(0, parseInt(localStorage.getItem("zerno") || "0", 10) || 0));
+const cnt = () => Object.keys(cart).reduce((s,k) => s + (COFFEE.has(k)||BUNDLE.has(k) ? cart[k].q : 0), 0);
+function freeDrink() {
+  if (stamps + cnt() < 10) return null;
+  const c = Object.keys(cart).filter(k => COFFEE.has(k)).sort((a,b) => cart[a].p - cart[b].p)[0];
+  return c ? {name:c, price:cart[c].p} : null;
+}
+const $ = id => document.getElementById(id);
+const rub = n => n.toLocaleString("ru-RU") + " ₽";
+const esc = s => s.replace(/[<>&"]/g, "");
+
+const ART = {"Завтрак: капучино + круассан":"☕🥐","Перекус: американо + пирожок":"🥟☕","Эспрессо":"☕","Американо":"🫖","Капучино":"🥛","Латте":"🧋","Раф":"🍮","Чай (чёрный, зелёный)":"🍵","Круассан":"🥐","Пирожок с капустой":"🥟"};
+const BADGE = {"Капучино":"Хит","Круассан":"К кофе"};
+const STR = {"Эспрессо":5,"Американо":3,"Капучино":3,"Латте":2,"Раф":2,"Завтрак: капучино + круассан":3,"Перекус: американо + пирожок":3};
+const TAGS = {"Эспрессо":"b","Американо":"b","Капучино":"n","Латте":"n","Раф":"n s","Чай (чёрный, зелёный)":"z","Круассан":"s k","Пирожок с капустой":"k","Завтрак: капучино + круассан":"n k","Перекус: американо + пирожок":"b k"};
+const FILT = [["","Всё меню"],["b","⚡ Бодрит"],["n","🥛 Нежное"],["s","🍯 Сладкое"],["z","🌿 Без кофе"],["k","🥐 Перекусить"]];
+$("filters").innerHTML = FILT.map(([k,l],i) => `<button type="button" class="${i ? "" : "on"}" data-f="${k}" aria-pressed="${!i}">${l}</button>`).join("");
+$("filters").addEventListener("click", e => {
+  const b = e.target.closest("button[data-f]"); if (!b) return;
+  const f = b.dataset.f;
+  $("filters").querySelectorAll("button").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
+  let hit = 0;
+  document.querySelectorAll(".card").forEach(c => {
+    const ok = !f || (TAGS[c.dataset.card] || "").split(" ").includes(f);
+    c.classList.toggle("dim", !ok); if (ok) hit++;
+  });
+  $("items").classList.toggle("filtered", !!f);
+});
+$("items").innerHTML = MENU.map(([cat, rows]) =>
+  `<h3>${cat}</h3><div class="grid${rows.some(r => BUNDLE.has(r[0])) ? " bundles" : ""}">` + rows.map(([n,p,v]) =>
+    `<div class="card${BUNDLE.has(n) ? " combo" : ""}" data-card="${n}">
+      ${BUNDLE.has(n) ? `<em class="badge">${v}</em>` : BADGE[n] ? `<em class="badge">${BADGE[n]}</em>` : ""}
+      <div class="art" aria-hidden="true">${ART[n] || "☕"}</div>
+      <div class="ct"><b>${n}</b>${BUNDLE.has(n) ? "" : `<small>${v}</small>`}${STR[n] ? `<span class="meter" title="Крепость ${STR[n]} из 5"><u>Крепость</u>${[1,2,3,4,5].map(i => `<i class="${i <= STR[n] ? "on" : ""}"></i>`).join("")}</span>` : ""}</div>
+      <div class="buy"><span class="pr">${rub(p)}</span>
+        <button class="add" data-n="${n}" data-p="${p}" aria-label="Добавить: ${n}">+</button>
+        <span class="qty step" hidden><button data-m="${n}" data-d="-1" aria-label="Убрать: ${n}">−</button><i>0</i><button data-m="${n}" data-d="1" aria-label="Ещё: ${n}">+</button></span>
+      </div></div>`).join("") + `</div>`).join("");
+function syncCards() {
+  document.querySelectorAll(".card").forEach(c => {
+    const q = cart[c.dataset.card] ? cart[c.dataset.card].q : 0;
+    c.classList.toggle("in", q > 0);
+    c.querySelector(".add").hidden = q > 0;
+    c.querySelector(".step").hidden = !q;
+    c.querySelector(".step i").textContent = q;
+  });
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button[data-n]");
+  if (b) { const k = b.dataset.n; cart[k] = cart[k] || {p:+b.dataset.p, q:0}; cart[k].q++; render(); }
+  const m = e.target.closest("button[data-m]");
+  if (m) { const k = m.dataset.m; cart[k].q += +m.dataset.d; if (cart[k].q <= 0) delete cart[k]; render(); }
+});
+
+function render() {
+  if (!Object.keys(cart).some(k => COFFEE.has(k) || BUNDLE.has(k))) for (const k of ADDSET) delete cart[k];
+  const keys = Object.keys(cart);
+  const fd = freeDrink();
+  $("lines").innerHTML = keys.length ? keys.map(k =>
+    `<li><span>${k}</span><span class="qty"><button data-m="${k}" data-d="-1">−</button>${cart[k].q}<button data-m="${k}" data-d="1">+</button></span><b>${rub(cart[k].p*cart[k].q)}</b></li>`).join("") + (fd ? `<li class="free"><span>★ ${fd.name} — 10-й кофе в подарок</span><span></span><b>−${rub(fd.price)}</b></li>` : "")
+    : `<li class="empty">Пока пусто. Начните с капучино?</li>`;
+  $("sum").textContent = rub(keys.reduce((s,k)=>s+cart[k].p*cart[k].q,0) - (fd ? fd.price : 0));
+  loyal(fd);
+  upsell(); addons(); crew();
+  $("send").disabled = !keys.length;
+  $("cart").classList.toggle("has", keys.length > 0);
+  $("barQ").textContent = keys.reduce((s,k)=>s+cart[k].q,0);
+  $("barS").textContent = $("sum").textContent;
+  barUpdate();
+  syncCards();
+  cup();
+}
+const MILKY = /Капучино|Латте|Раф|Завтрак|Овсяное/;
+function cup() {
+  const ks = Object.keys(cart), n = ks.reduce((s,k)=>s+cart[k].q,0);
+  const coffee = ks.some(k => COFFEE.has(k) || BUNDLE.has(k)), milk = ks.some(k => MILKY.test(k));
+  const lc = $("livecup");
+  lc.classList.toggle("full", coffee); lc.classList.toggle("milky", milk);
+  $("lcf").style.height = coffee ? Math.min(92, 52 + n*10) + "%" : "0%";
+  $("lcm").textContent = !n ? "Стакан ждёт: добавьте напиток"
+    : !coffee ? "Без кофе — но стакан всё равно ваш"
+    : milk ? "С молоком и нежной пенкой" : "Чёрный, крепкий, без пенки";
+}
+function cupName() {
+  const v = esc($("name").value.trim());
+  $("lcn").textContent = v || "Имя";
+  $("livecup").classList.toggle("named", !!v);
+}
+$("name").addEventListener("input", cupName);
+const PAIRS = [["Капучино","Круассан","Завтрак: капучино + круассан"],["Американо","Пирожок с капустой","Перекус: американо + пирожок"]];
+function upsell() {
+  let html = "";
+  for (const [c,f,b] of PAIRS) {
+    const pc = PRICES[c], pf = PRICES[f], pb = PRICES[b], hasB = cart[b];
+    if (cart[c] && cart[f]) {
+      html = `<b>Выгоднее набором</b><p>«${c}» и «${f}» по отдельности — ${rub(pc+pf)}. В наборе — ${rub(pb)}.</p><button type="button" data-up="${c}|${f}|${b}">Объединить и сэкономить ${rub(pc+pf-pb)}</button>`; break;
+    }
+    if (cart[c] && !hasB) {
+      html = `<b>Добавить ${f.split(" ")[0].toLowerCase()}?</b><p>Замените «${c}» на набор: всего +${rub(pb-pc)} вместо ${rub(pf)} — это на ${rub(pc+pf-pb)} дешевле.</p><button type="button" data-up="${c}||${b}">Сделать набором · +${rub(pb-pc)}</button>`; break;
+    }
+  }
+  $("upsell").innerHTML = html;
+}
+document.addEventListener("click", e => {
+  const u = e.target.closest("button[data-up]"); if (!u) return;
+  const [c,f,b] = u.dataset.up.split("|");
+  for (const k of [c,f]) if (k && cart[k] && --cart[k].q <= 0) delete cart[k];
+  cart[b] = cart[b] || {p:PRICES[b], q:0}; cart[b].q++;
+  render();
+});
+function crew() {
+  const has = Object.keys(cart).some(k => COFFEE.has(k) || BUNDLE.has(k));
+  if (!has) { $("crew").innerHTML = ""; return; }
+  const one = Object.keys(cart).reduce((s,k) => s + cart[k].p*cart[k].q, 0);
+  $("crew").innerHTML = `<b>Берёте на всех?</b><p>Один тап — и весь заказ умножится на число людей. Бариста соберёт всё разом.</p><div>` +
+    [2,3,4,6].map(n => `<button type="button" data-crew="${n}"><span>×${n}</span><small>${rub(one*n)}</small></button>`).join("") + `</div>`;
+}
+document.addEventListener("click", e => {
+  const c = e.target.closest("button[data-crew]"); if (!c) return;
+  const n = +c.dataset.crew;
+  for (const k of Object.keys(cart)) cart[k].q = Math.min(30, cart[k].q * n);
+  render();
+});
+function loyal(fd) {
+  const n = cnt(), pend = Math.min(n, 9 - stamps);
+  $("dots").innerHTML = Array.from({length:9}, (_,i) => `<i class="${i < stamps ? "on" : i < stamps + pend ? "pend" : ""}">${i < stamps ? "✓" : ""}</i>`).join("")
+    + `<i class="gift ${stamps + n >= 10 ? "won" : ""}">★</i>`;
+  const left = 9 - stamps;
+  $("loyalText").textContent = fd ? `Десятый кофе в этом заказе — бесплатно: «${fd.name}» уже вычтен из суммы!`
+    : stamps + n >= 10 ? "С этим заказом вы дойдёте до подарка — добавьте любой кофе из списка (не набор), и он будет бесплатным."
+    : stamps === 0 && !n ? "Карта хранится прямо на сайте — ничего просить не нужно. Каждый кофе и набор — одна отметка, десятый бесплатно."
+    : n ? `Отметок: ${stamps} из 9. С этим заказом — ${stamps + n}. Ещё ${Math.max(0, left - n)} — и кофе в подарок.`
+    : `Отметок: ${stamps} из 9. Ещё ${left} — и следующий кофе бесплатно.`;
+  $("loyalReset").hidden = !stamps;
+}
+$("loyalReset").onclick = () => { stamps = 0; localStorage.removeItem("zerno"); render(); };
+const PRICES = {};
+MENU.forEach(([,rows]) => rows.forEach(([n,p]) => PRICES[n] = p));
+const ADDONS = [["🌱","Овсяное молоко",50,"мягче и без лактозы"],["🍯","Сироп: ваниль или карамель",30,"сладкая нотка"],["⚡","Двойной шот",60,"вдвое бодрее"]];
+ADDONS.forEach(a => PRICES[a[1]] = a[2]);
+const ADDSET = new Set(ADDONS.map(a => a[1]));
+function addons() {
+  const has = Object.keys(cart).some(k => COFFEE.has(k) || BUNDLE.has(k));
+  $("addons").innerHTML = has ? `<b>Сделайте напиток своим</b><div>` + ADDONS.map(([e,n,p,d]) =>
+    `<button type="button" class="${cart[n] ? "on" : ""}" aria-pressed="${!!cart[n]}" data-add="${n}"><span>${e}</span><em>${n.split(":")[0]}<small>${cart[n] ? "✓ добавлено" : d}</small></em><i>+${p} ₽</i></button>`).join("") + `</div>` : "";
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest("button[data-add]"); if (!a) return;
+  const k = a.dataset.add;
+  if (cart[k]) delete cart[k]; else cart[k] = {p:PRICES[k], q:1};
+  render();
+});
+function showUsual() {
+  let last = null;
+  try { last = JSON.parse(localStorage.getItem("zernoLast")); } catch (e) {}
+  const items = last && Array.isArray(last.items) ? last.items.filter(([n,q]) => PRICES[n] && q > 0 && q < 20) : [];
+  if (!items.length) return;
+  const sum = items.reduce((s,[n,q]) => s + PRICES[n]*q, 0);
+  const nm = typeof last.name === "string" && last.name !== "гость" ? last.name : "";
+  $("usualHi").textContent = nm ? `С возвращением, ${nm}! Ваш обычный заказ:` : "С возвращением! Ваш обычный заказ:";
+  $("usualList").textContent = items.map(([n,q]) => q > 1 ? `${n} ×${q}` : n).join(", ");
+  $("usualGo").textContent = `Повторить за ${rub(sum)} →`;
+  $("usual").hidden = false;
+  $("heroBtn").className = "btn ghost";
+  $("usualGo").onclick = () => {
+    for (const k of Object.keys(cart)) delete cart[k];
+    items.forEach(([n,q]) => cart[n] = {p:PRICES[n], q});
+    if (nm) $("name").value = nm;
+    render();
+    $("cart").scrollIntoView({behavior:"smooth", block:"center"});
+    $("send").focus({preventScroll:true});
+  };
+}
+let cartSeen = false;
+function barUpdate(){ $("bar").hidden = !Object.keys(cart).length || cartSeen; }
+new IntersectionObserver(([e]) => { cartSeen = e.isIntersecting; barUpdate(); }).observe($("cart"));
+
+const pad = n => String(n).padStart(2,"0");
+const HRS = d => (d.getDay()%6===0) ? [10,20] : [8,21];
+let slotIdx = 0, slotList = [];
+function buildSlots() {
+  const now = new Date(), [o,c] = HRS(now);
+  const open = new Date(now); open.setHours(o,0,0,0);
+  const close = new Date(now); close.setHours(c,0,0,0);
+  let t = new Date(Math.ceil((now.getTime() + 10*60000) / 300000) * 300000), day = "";
+  if (t < open) t = open;
+  if (t.getTime() > close.getTime() - 10*60000) {
+    t = new Date(now); t.setDate(t.getDate()+1); t.setHours(HRS(t)[0],0,0,0); day = "завтра ";
+  }
+  const end = new Date(t); end.setHours(HRS(t)[1],0,0,0);
+  slotList = [0,10,20,35].map(m => new Date(t.getTime()+m*60000)).filter(d => d <= end)
+    .map(d => ({ts: d.getTime(), label: pad(d.getHours())+":"+pad(d.getMinutes()), text: day + "в " + pad(d.getHours())+":"+pad(d.getMinutes())}));
+  slotIdx = Math.min(slotIdx, slotList.length-1);
+  const rel = (s,i) => day ? (i ? "позже" : "первый слот") : (i ? "" : "ближайшее · ") + "через " + span(s.ts - now.getTime());
+  $("slots").innerHTML = slotList.map((s,i) => `<button type="button" role="radio" aria-checked="${i===slotIdx}" class="${i===slotIdx?"on":""}" data-s="${i}"><b>${s.label}</b><span>${rel(s,i)}</span></button>`).join("")
+    + `<small>${day ? "Сегодня уже закрыто — первые слоты " + day.trim() : "Сколько вам идти? Выберите, когда будете у нас — бариста сварит ровно к этому моменту"}</small>`;
+  $("status").innerHTML = (now >= open && now < close)
+    ? `<i></i>Открыто сейчас · до ${c}:00`
+    : `<i class="off"></i>Сейчас закрыто · откроемся ${now < open ? "сегодня" : "завтра"} в ${(now < open ? o : HRS(new Date(now.getTime()+864e5))[0])}:00`;
+}
+const slotText = () => (slotList[slotIdx] || {text:"в ближайшее время"}).text;
+$("slots").addEventListener("click", e => {
+  const b = e.target.closest("button[data-s]"); if (!b) return;
+  slotIdx = +b.dataset.s; buildSlots();
+});
+
+const MOODS = [
+  ["⚡","Проснуться","Эспрессо","Короткий, крепкий и без церемоний — мозг включается за два глотка."],
+  ["🛋️","Нежно и тепло","Латте","Много молока, мягкий вкус — как плед в стакане."],
+  ["🍰","Что-то сладкое","Раф","Сливочный и ванильный: почти десерт, только в чашке."],
+  ["🎯","Поработать","Американо","Большая чашка на час-другой. Не остынет и не надоест."],
+  ["🥐","Перекусить","Завтрак: капучино + круассан","Кофе и круассан со скидкой 40 ₽ — самый выгодный выбор в меню."]
+];
+$("moods").innerHTML = MOODS.map((m,i) => `<button type="button" data-mood="${i}"><span>${m[0]}</span>${m[1]}</button>`).join("");
+function showMood(i, auto) {
+  const [,,n,why] = MOODS[i], p = PRICES[n];
+  document.querySelectorAll("#moods button").forEach(x => x.classList.toggle("on", +x.dataset.mood === i));
+  const when = slotList[slotIdx] ? slotList[slotIdx].text : "в ближайшее время";
+  $("rec").innerHTML = `<div class="ra">${ART[n]}</div><div><b>${n}</b><p>${auto ? "<em class='now'>Сейчас в самый раз.</em> " : ""}${why}</p></div>
+    <button class="btn full" type="button" data-quick="${n}" data-p="${p}">Заказать сразу · ${rub(p)} · ${when}</button>
+    <button class="btn ghost full" type="button" data-n="${n}" data-p="${p}">Добавить в заказ и выбрать ещё</button>
+    <p class="qn">Один клик — и заказ у бариста. Оплата на месте, имя можно не указывать.</p>`;
+  const go = $("rec").querySelector("[data-n]");
+  go.addEventListener("click", () => { go.textContent = "✓ Добавлено — выбрать ещё?"; go.classList.add("ok"); });
+}
+$("moods").addEventListener("click", e => {
+  const b = e.target.closest("button[data-mood]"); if (b) showMood(+b.dataset.mood, false);
+});
+$("rec").addEventListener("click", e => {
+  const q = e.target.closest("button[data-quick]"); if (!q) return;
+  const k = q.dataset.quick;
+  cart[k] = cart[k] || {p:+q.dataset.p, q:0}; cart[k].q++;
+  render(); $("send").click();
+  q.textContent = "✓ Заказ отправлен — смотрите статус справа";
+  q.disabled = true;
+});
+buildSlots(); setInterval(buildSlots, 60000);
+showMood(new Date().getHours() < 11 ? 4 : new Date().getHours() < 16 ? 3 : 1, true);
+render();
+showUsual();
+$("send").onclick = () => {
+  const keys = Object.keys(cart);
+  const name = esc($("name").value.trim()) || "гость";
+  const fd = freeDrink(), n = cnt(), total = stamps + n;
+  const lines = keys.map(k => `<li><span>${k}</span><b>×${cart[k].q}</b></li>`).join("");
+  const slot = slotList[slotIdx];
+  localStorage.setItem("zernoLast", JSON.stringify({name, items: keys.map(k => [k, cart[k].q])}));
+  stamps = fd ? (total - 10) % 10 : Math.min(total, 9);
+  localStorage.setItem("zerno", stamps);
+  for (const k of keys) delete cart[k];
+  render(); cupName();
+  const reward = fd ? `<p class="tg">★ Десятый кофе — «${fd.name}» — за наш счёт!</p>` : n ? `<p class="tg">Отметок на карте: ${stamps} из 9</p>` : "";
+  ticket = {t0: Date.now(), ts: slot ? slot.ts : Date.now() + 15*60000};
+  $("done").innerHTML = `<div class="cupnote"><div class="cupart" aria-hidden="true"><span class="lid"></span><span class="sleeve"><em>${name}</em></span></div>
+    <div><small>Стакан подписан</small><b>${name}</b><span>Заберите ${slotText()}</span></div></div>
+    <div class="track" aria-live="polite"><div class="tbar"><i id="tfill"></i></div>
+      <ol><li id="st1">Принят</li><li id="st2">Варим</li><li id="st3">Готово</li></ol>
+      <p id="tmsg"></p></div>
+    <ul class="tl">${lines}</ul>${reward}<div class="leave" id="leave"><b>⏰ Не забудьте выйти вовремя</b><p>Сколько вам идти до нас? Добавим в календарь напоминание — телефон напомнит, когда пора выходить.</p><div class="lv">${[5,10,15,20,30].map((m,i) => `<button type="button" data-walk="${m}">${m} мин</button>`).join("")}</div><p class="lvm" id="lvm" aria-live="polite"></p></div><a class="way" href="#visit">🧭 Вход со двора, 2 этаж, дверь направо — как дойти →</a>`;
+  $("done").hidden = false;
+  tick();
+  $("done").scrollIntoView({behavior:"smooth", block:"center"});
+};
+$("copyAddr").onclick = e => { const b = e.currentTarget; (navigator.clipboard ? navigator.clipboard.writeText("г. Москва, ул. Примерная, д. 1, вход со двора, 2 этаж") : Promise.reject()).then(() => b.textContent = "✓ Скопировано", () => b.textContent = "г. Москва, ул. Примерная, д. 1"); };
+new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { $("steps").classList.add("go"); o.disconnect(); } }, {threshold:.4}).observe($("steps"));
+let ticket = null;
+$("done").addEventListener("click", e => {
+  const b = e.target.closest("button[data-walk]"); if (!b || !ticket) return;
+  const w = +b.dataset.walk, go = ticket.ts - w*60000;
+  document.querySelectorAll("#leave [data-walk]").forEach(x => x.classList.toggle("on", x === b));
+  const f = t => new Date(t).toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Zernyshko//RU","BEGIN:VEVENT","UID:"+ticket.t0+"@zernyshko","DTSTAMP:"+f(Date.now()),"DTSTART:"+f(go),"DTEND:"+f(ticket.ts),
+    "SUMMARY:☕ Выходите за кофе — Зёрнышко","LOCATION:г. Москва\\, ул. Примерная\\, д. 1\\, вход со двора\\, 2 этаж","DESCRIPTION:Заказ будет готов к "+pad(new Date(ticket.ts).getHours())+":"+pad(new Date(ticket.ts).getMinutes())+". Назовите имя на стойке.",
+    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:Пора выходить за кофе","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([ics], {type:"text/calendar"})); a.download = "zernyshko.ics"; a.click();
+  const d = new Date(go);
+  $("lvm").textContent = left0(go) ? `✓ Напоминание на ${pad(d.getHours())}:${pad(d.getMinutes())} — выходите за ${w} мин до готовности` : `Выходить нужно уже сейчас — слот через ${span(ticket.ts - Date.now())}!`;
+});
+const left0 = t => t > Date.now();
+function span(ms) {
+  const m = Math.max(1, Math.ceil(ms/60000));
+  return m >= 60 ? `${Math.floor(m/60)} ч${m%60 ? " " + m%60 + " мин" : ""}` : `${m} мин`;
+}
+function tick() {
+  if (!ticket) return;
+  const now = Date.now(), left = ticket.ts - now, brew = ticket.ts - 5*60000;
+  const stage = left <= 0 ? 3 : now >= brew ? 2 : 1;
+  $("tfill").style.width = Math.min(100, Math.max(4, (now - ticket.t0) / (ticket.ts - ticket.t0) * 100)) + "%";
+  [1,2,3].forEach(i => $("st"+i).className = i < stage ? "done" : i === stage ? "now" : "");
+  $("tmsg").textContent = stage === 3
+    ? (-left > 15*60000 ? "Время выдачи прошло — назовите имя на стойке, мы поможем." : "Готово! Горячий заказ ждёт вас на стойке — назовите имя.")
+    : stage === 2 ? `Бариста уже варит — будет готово через ${span(left)}`
+    : `Заказ у бариста. Начнём варить за 5 минут до выдачи — до готовности ${span(left)}`;
+  $("tmsg").classList.toggle("ready", stage === 3);
+}
+setInterval(tick, 15000);
+</script>
+</body>
+</html>

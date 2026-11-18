@@ -1,0 +1,201 @@
+/* ——— ручная часть «Вечернего зала» (дописывается в конец evening.css) ——— */
+html.vz { color-scheme: dark; }
+/* зал вечером: тёмное дерево, а сверху, от абажура, — тёплое пятно света */
+html.vz body {
+  background:
+    radial-gradient(1100px 640px at 50% -220px, rgba(255,168,84,.15), transparent 70%) no-repeat,
+    radial-gradient(600px 400px at 100% 0, rgba(255,190,110,.06), transparent 70%) no-repeat,
+    #15100c;
+}
+html.vz h1 em { color: #f5b866; }
+html.vz .eyebrow { color: #f0a24a; }
+/* Окошко — как стойка под лампой: светится изнутри */
+html.vz .qk { border-color: #4a3826; box-shadow: 0 0 0 1px #00000066, 0 50px 120px -50px rgba(255,160,70,.45), inset 0 1px 0 rgba(255,220,170,.08); }
+html.vz .btn.big { box-shadow: 0 12px 34px -12px rgba(240,150,60,.8); }
+
+/* торшер горит */
+html.vz .vz-tg { background: #2a1d15; border-color: #f0a24a66; color: #ffd27a; }
+html.vz .vz-tg:hover { border-color: #f0a24a; color: #ffe2a8; }
+/* «Ключница у двери»: на доске вечером фокус — золотой, как крючки */
+html.vz .kh-keys > button:focus-visible { outline-color: #ffd27a; }
+html.vz .vz-lamp { background: #15100c; }
+html.vz .vz-lamp s { background: #c99a5a; }
+html.vz .vz-lamp b { background: #f0a24a; }
+html.vz .vz-lamp u { background: #fff3c4; box-shadow: 0 2px 10px 4px rgba(255,190,100,.75); }
+html.vz .vz-lamp::after { /* конус света от абажура вниз, на шапку */
+  content: ""; position: absolute; left: 50%; top: 16px; width: 150px; height: 120px; margin-left: -75px; pointer-events: none;
+  background: radial-gradient(60% 100% at 50% 0, rgba(255,200,120,.16), transparent 75%);
+  clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+}
+html.vz .vz-tip { background: #f3e6d3; color: #2a1d15; }
+html.vz .vz-tip b { color: #8a4a1c; }
+html.vz .vz-tip button { color: #8a4a1c; border-color: #8a4a1c55; }
+html.vz .vz-tip button:first-of-type { background: #2a1d15; color: #ffd27a; border-color: #2a1d15; }
+
+/* «Мне нельзя» вечером: зелёное «можно» и красное «нельзя» — приглушённые, на тёмном, текст светлый */
+html.vz { --ng-ok: #8fd0a0; --ng-ok-bg: #1d3023; --ng-no: #ff9a85; --ng-no-bg: #3a1e17; }
+html.vz .ng-qk > i, html.vz .qk-cups button.ng-ok::before, html.vz .qk-cups button.ng-no::before { color: #15100c; }
+html.vz .ng-qk button, html.vz .ng-tg[aria-pressed="true"] i { background: #251d11; }
+html.vz .ng-qk, html.vz .ng-ask.on { color: #e8d9d0; }
+html.vz .items button.ng-ok { border-color: #3d5a43; }
+
+/* «Окошко показывает само»: ярлычок на козырьке и подпись у пальца вечером */
+html.vz .gh-tg { background: #2a1d15; border-color: #f0a24a66; color: #ffd27a; box-shadow: 0 6px 16px -8px rgba(255,160,70,.5); }
+html.vz .gh-tg small { color: #c1b3a7; }
+html.vz .gh-tg:hover, html.vz .gh-tg:focus-visible { background: #33241a; border-color: #f0a24a; }
+html.vz .gh-tg[aria-pressed="true"] { background: #d9822b; border-color: #d9822b; color: #fff; }
+html.vz .gh-c { background: rgba(243,230,211,.96); color: #2a1d15; }
+html.vz .gh-c b { color: #8a4a1c; }
+
+/* при переключении всё остальное не дёргается — цвета меняет круг света */
+html.vz-go *, html.vz-go *::before, html.vz-go *::after { transition: none !important; }
+
+/* «Ждёт — или даром»: печать вечером — тёплая красная тушь на тёмной бумаге, экран для бариста темнеет вместе с залом */
+html.vz .gt-seal { color: #ff9a85; }
+html.vz .gt-r1 { fill: #221a13 !important; }
+html.vz .gt-more, html.vz .gt-terms b { color: #ff9a85; }
+html.vz .gt-say b, html.vz .gt-live b { color: #f3e3cf; }
+html.vz .gt-terms, html.vz .gt-live { background: #241a14; border-color: #7a4436; color: #e8d9d0; }
+html.vz .gt-mini { border-color: #ff9a85; color: #ff9a85; }
+html.vz .gt-live button { background: #1e1812; border-color: #ff9a85; color: #ff9a85; }
+html.vz .gt-live button.gt-claim { background: #c4574a; border-color: #c4574a; color: #fff; }
+/* «Обед к часу»: коробка вечером — та же крафтовая, под лампой; гнёзда и часы читаются */
+html.vz .ln-desk { border-color: #4a3921; box-shadow: 6px 6px 0 #0b0806; }
+html.vz .ln-box { background-color: #8a6844; border-color: #2a1d15; box-shadow: inset 0 0 0 5px #7a5a38, 0 10px 0 -2px rgba(0,0,0,.4); }
+html.vz .ln-lid { background: linear-gradient(#9c7a52, #87653f); }
+html.vz .ln-well { background: #6f5132; border-color: rgba(255,230,200,.35); }
+html.vz .ln-well.on { background: #f0dfc2; color: #2a1d15; }
+html.vz .ln-well.on .ln-wt small { color: #7a6656; }
+html.vz .ln-dash { border-color: rgba(255,230,200,.4); color: #f3e3cf; }
+html.vz .ln-clock { background: #0e0a07; box-shadow: inset 0 0 0 1.5px #4a3921; }
+html.vz .ln-meter { background: rgba(255,255,255,.12); }
+html.vz .ln-meter i { background: #ffd08a; }
+html.vz .ln-few .ln-meter i { background: #ff9b6b; }
+html.vz .ln-days li > i { box-shadow: 0 0 0 4px #251d11, 0 0 0 5.5px #e8d9d0; }
+html.vz .qk-ln { background: linear-gradient(90deg, #3a2a1a, #251d11); border-color: #7a5a38; color: #e8d9d0; }
+html.vz .qk-ln em { color: #f5b866; }
+html.vz .qk-ln.mine { background: #1c2a1e; border-color: #2f8a4f; }
+html.vz .qk-ln.mine em { color: #98dcb0; }
+/* «Перерыв целиком»: под лампой циферблат остаётся белым, как настоящие часы на стене; рамки — тёплые, а не чёрные */
+html.vz .pz-ask { border-color: #8a6a4c; box-shadow: 3px 3px 0 #0b0806; }
+html.vz .pz-ask:hover { box-shadow: 4px 4px 0 #0b0806; }
+html.vz .pzw.on .pz-ask { border-color: #2f8a4f; box-shadow: 3px 3px 0 #0f2a17; }
+html.vz .pz-out { border-color: #5a4630; }
+html.vz .pz-ch button[aria-checked="true"] { background: #f0dfc2; border-color: #f0dfc2; color: #2a1d15; }
+html.vz .pz-ch button[aria-checked="true"] small { color: #7a6656; }
+html.vz .pz-plan i { border-color: #8a6a4c; }
+html.vz .pz-dial { filter: drop-shadow(0 0 14px rgba(255, 200, 130, .18)); }
+/* «Лот недели»: весы вечером — стальная платформа и зелёное табло светятся под лампой, кружки-чашки видны на тёмном */
+html.vz .lt-stage { border-color: #4a3921; box-shadow: 6px 6px 0 #0b0806; }
+html.vz .lt-lamp { background: radial-gradient(closest-side, rgba(255,214,140,.22), transparent); }
+html.vz .lt-plate { background: linear-gradient(#c9ccce, #8d9093); border-color: #0b0806; }
+html.vz .lt-body { border-color: #0b0806; }
+html.vz .lt-jar { border-color: rgba(255,230,200,.5); background: rgba(255,240,220,.12); }
+html.vz .lt-jar b { background: #f0dfc2; color: #1f3f8f; border-color: #2a1d15; }
+html.vz .lt-cups li, html.vz .lt-key i { border-color: rgba(255,230,200,.45); }
+html.vz .lt-cups li.d, html.vz .lt-key i.d { background: #c79a72; border-color: #c79a72; opacity: .45; }
+html.vz .lt-cups li.m.s { background: linear-gradient(0deg, #d9822b 34%, #251d11 34%); }
+html.vz .lt-notes li { border-color: rgba(255,230,200,.35); }
+html.vz .lt-pass div:first-child dd::after { border-color: rgba(255,230,200,.5); }
+html.vz .lt-row li.cur { border-color: #e8d9d0; box-shadow: 4px 4px 0 #0b0806; }
+html.vz .lt-row li::before { border-right-color: rgba(255,230,200,.35); }
+html.vz .lt-when button[aria-checked="true"] { border-color: #e8d9d0; box-shadow: 3px 3px 0 #0b0806; }
+html.vz .lt-ics { border-color: rgba(255,230,200,.45); }
+html.vz .lt-ics:hover { background: #2c2314; }
+/* «Смена за стойкой»: стойка под абажуром — рамка светлая, бегунок на шкале вкуса светлый, кнопка пролива с медным ободком */
+html.vz .sb-stage { border-color: #e8d9d0; box-shadow: 6px 6px 0 #0b0806; }
+html.vz .sb-meter i { background: #f6efe6; box-shadow: 0 0 0 2px #15100c; }
+html.vz .sb-pull { background: #0f0906; box-shadow: 0 6px 0 #000, inset 0 0 0 1.5px #b87333; }
+html.vz .sb-pull[aria-pressed="true"] { box-shadow: 0 1px 0 #000, inset 0 0 0 1.5px #b87333; }
+/* «Эстафета стаканов»: полка под абажуром — бумага тёмная, но ярлыки, рукава и записка обведены светлым, тени уходят в темноту */
+html.vz .er-stage { border-color: #e8d9d0; box-shadow: 6px 6px 0 #0b0806; }
+html.vz .er-tag, html.vz .er-sleeve, html.vz .er-tag::before { border-color: #e8d9d0; }
+html.vz .er-card { border-color: #e8d9d0; box-shadow: 4px 4px 0 #0b0806; }
+html.vz .er-board { border-top-color: #0b0806; }
+html.vz .er-chips button[aria-pressed="true"] { border-color: #e8d9d0; }
+html.vz .qk-erp { background: #3a331a; border-color: #e8d9d0; }
+
+/* «Подарочная карта»: обложки и крафтовый конверт — вещи, а не интерфейс: вечером их не перекрашиваем, только стол под лампой темнее */
+html.vz .gc-desk { border-color: #e8d9d0; box-shadow: 6px 6px 0 #0b0806; background: radial-gradient(90% 70% at 50% 10%, rgba(255,190,110,.22), transparent 70%), repeating-linear-gradient(90deg, #5a3d27 0 46px, #533823 46px 92px); }
+html.vz .gc-d .gc-desk { box-shadow: none; }
+html.vz .gc-env-back { background: #c49a68; }
+html.vz .gc-env-front { background: linear-gradient(#e2c08f, #d6b080); }
+html.vz .gc-env-flap { background: linear-gradient(#cfa673, #bf9363); }
+html.vz .gc-card[data-cv="snow"], html.vz .gc-sw[data-cv="snow"] { background: linear-gradient(#1d2b45, #42557a); }
+html.vz .gc-card[data-cv="tree"], html.vz .gc-sw[data-cv="tree"] { background: radial-gradient(circle at 76% 55%, #9a6640, #4f2e1d 75%); }
+html.vz .gc-card[data-cv="bean"], html.vz .gc-sw[data-cv="bean"] { background: radial-gradient(circle at 30% 20%, #ddb07a, #c08d55 70%); }
+html.vz .gc-card[data-cv="knit"], html.vz .gc-sw[data-cv="knit"] { background: repeating-linear-gradient(0deg, #b8322a 0 20px, #a32a22 20px 40px); }
+html.vz .gc-card { color: var(--gc-ink); }
+html.vz .gc-sums button[aria-checked="true"], html.vz .gc-how button[aria-checked="true"], html.vz .gc-cvs button[aria-checked="true"] { border-color: #f0a24a; box-shadow: 0 0 0 2px #f0a24a inset; }
+html.vz .gc-sums em { background: #2f8a4f; color: #fff; }
+html.vz .gc-d { border-color: #e8d9d0; box-shadow: 8px 8px 0 #0b0806; }
+html.vz .qk-gc[aria-pressed="true"] { background: #1e3325; border-color: #5fb57a; }
+html.vz .qk-gc[aria-pressed="true"] b { color: #9fe0b2; }
+/* «Дверь на Примерной»: табличка на шнурке и эмалевая вывеска — вещи, а не фон страницы; вечером они те же, только дверь подсвечена */
+html.vz .door-sign b { color: #2a1d15; background: #e9cf9f; border-color: #0b0806; }
+html.vz .door-sign .ds-a { color: #1f6a3b; }
+html.vz .door-sign .ds-b { color: #a8392a; }
+html.vz .door-sign i { border-color: #c9b9a8; border-bottom: 0; }
+html.vz .door-plate { box-shadow: inset 0 0 0 3px #1f4d47, inset 0 0 0 5px #e9e1cf, 0 10px 24px -14px #000; }
+html.vz .door-plate::before, html.vz .door-plate::after { background: #c9c1ae; box-shadow: inset -1px -1px 0 #8b8472; }
+html.vz .dp-row.today { background: rgba(246,239,230,.14); }
+html.vz .dp-row.today::after { color: #2a1d15; background: #f0a24a; }
+html.vz .door-go small { background: rgba(255,255,255,.2); }
+html.vz .door-art { box-shadow: 0 0 0 1px #3a2a1e, 0 18px 40px -18px #f0a24a55; }
+html.vz .dp-ruler::before { background: rgba(246,239,230,.18); }
+html.vz .dp-open { background: #f0a24a; }
+html.vz .dp-needle { background: #fff8e3; }
+html.vz .dp-needle b { color: #1f4d47; background: #fff8e3; }
+/* «Стена у стойки»: полароиды — бумага, а не фон страницы; вечером они те же, чуть приглушённые, как под лампой */
+html.vz .pw-face { background: #ece2d2; box-shadow: 0 12px 22px -12px #000, 0 0 0 1px rgba(0,0,0,.2); }
+html.vz .pw.pw-js .pw-back { background: repeating-linear-gradient(#ece2d2 0 21px, #ddd0bc 21px 22px); box-shadow: 0 12px 22px -12px #000; }
+html.vz .pw-face figcaption, html.vz .pw-sig { color: #2b4a8b; }
+html.vz .pw-face figcaption b, html.vz .pw.pw-js .pw-back b { color: #6b3e26; }
+html.vz .pw.pw-js .pw-back { color: #3a2a1e; }
+html.vz .pw-empty { background: repeating-linear-gradient(45deg, #e3d6c3 0 8px, #d8c9b2 8px 16px); }
+html.vz .pw-q { color: #b08660; }
+html.vz .pw-mine { background: radial-gradient(circle at 50% 40%, #f6e2c8, #d9b58c); }
+html.vz .pw-c::before { border-bottom-color: #8a7050; }
+html.vz .pw-key .pw-face::after { background: #f4d35e; color: #2a1d15; }
+html.vz .pw-ph { filter: sepia(var(--age, 0)) saturate(calc(1 - var(--age, 0) * .4)) brightness(.92); }
+/* «Круг со стаканом»: карта остаётся дневной бумагой под лампой, а пилюля минут и стаканчик-шкала — светлыми на тёмном */
+html.vz .ks-at b { background: #d9822b; color: #1e1812; }
+html.vz .ks-g-cup { border-color: #c1b3a7; }
+html.vz .ks-art { filter: brightness(.9) sepia(.12); }
+/* «Зал целиком»: панорама остаётся рисунком под лампой, точки — светлыми кружками с тёмной обводкой, как днём */
+html.vz .zl-art { filter: brightness(.88) sepia(.1); }
+html.vz .zl-pin { background: #f3e7d8; border-color: #2a1d15; color: #2a1d15; }
+html.vz .zl-pin.on { background: #d9822b; }
+html.vz .zl-main, html.vz .zl-main.on { background: #2f8a4f; color: #fff; }
+/* «Морозная цена»: термометр остаётся деревянной дощечкой под лампой, морозная плашка — тёмно-синяя, иней на Окошке — светлее и тише */
+html.vz { --fz: #8fbde0; --fz-bg: #16222c; }
+html.vz .fz-th { filter: brightness(.9) sepia(.08); }
+html.vz .fz-go { color: #10202c; }
+html.vz .fz-go:hover { background: #b3d4ee; }
+html.vz .qk.fz-on::after { opacity: calc(var(--fzk, .5) * .6); }
+/* «Под крышкой»: крышка — светлый предмет и вечером, надпись на ней и крошки фольги остаются как днём */
+html.vz .ld-prize b { color: #6b3e26; }
+html.vz .ld-crumb { background: linear-gradient(135deg, #f4f4f1, #9fa3a8); }
+/* «На кофейной гуще»: блюдце и чашка — фарфор и вечером, а счётчик оборотов светлеет на тёмной скатерти */
+html.vz .gu-turns i { background: linear-gradient(90deg, #e1bdaa calc(var(--p) * 100%), #e1bdaa33 0); }
+html.vz .gu-card { background: repeating-linear-gradient(0deg, #c9785a14 0 22px, transparent 22px 44px), repeating-linear-gradient(90deg, #c9785a14 0 22px, transparent 22px 44px), linear-gradient(160deg, #2b2214, #352918); }
+/* «Захватишь мне?»: стикер — бумага и вечером, только под лампой чуть темнее */
+html.vz .zx-st { background: #e8d47a; color: #2a1d15; box-shadow: 0 1px 0 #b9a24a, 0 14px 24px -14px #000; }
+html.vz .zx-st.on { background: #efe09a; box-shadow: 0 0 0 2px #4fb070, 0 14px 24px -14px #000; }
+html.vz .zx-st.got { background: #c9dfc2; }
+html.vz .zx-from { color: #5a3e08; }
+html.vz .zx-t > b small, html.vz .zx-t > small { color: #5f4e2a; }
+html.vz .zx-x { color: #6b5a2a; }
+html.vz .zx-on { background: #6b3e26; color: #fff; }
+html.vz .zx-st.on .zx-on { background: #2f8a4f; }
+html.vz .zx-ask { background: #2a2312; border-color: #8a7436; }
+html.vz .zx-ask-tg { color: #efe3d6; }
+html.vz .zx-ask-t span, html.vz .zx-ask-f label, html.vz .zx-ask-fine { color: #c1b3a7; }
+html.vz .zx-ask-tg > u { color: #f5b866; }
+html.vz .zx-ask-st { background: #e8d47a; }
+html.vz .zx-ask-f input { background: #1d1711; border-color: #4a3826; color: #efe3d6; }
+html.vz .zx-st::before, html.vz .zx-ask-st::before { background: rgba(255, 255, 255, .35); }
+
+/* «Стакан на вырост»: пунктир большого стакана лежит на тёмном фоне — светлее; пунктир маленького внутри большого лежит на молоке — остаётся тёмным */
+html.vz .qk-gh .art path, html.vz .qk-gh .art ellipse, html.vz .qk-gh .art circle, html.vz .qk-gh .art rect { stroke: #e9a25a; }
+html.vz .qk-grow.big .qk-gh .art path, html.vz .qk-grow.big .qk-gh .art ellipse, html.vz .qk-grow.big .qk-gh .art circle, html.vz .qk-grow.big .qk-gh .art rect { stroke: #6b3e26; }

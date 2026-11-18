@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кофейня «Зёрнышко» — закажите кофе заранее и заберите без очереди</title>
+<meta name="description" content="Кофейня «Зёрнышко» на ул. Примерной, 1. Соберите заказ на сайте за 20 секунд и заберите без очереди. С 2011 года.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="logo" href="#">Зёрнышко<span>с 2011</span></a>
+  <span class="status" id="status">…</span>
+</header>
+
+<section class="hero">
+  <!-- ночная смена: мы закрыты, но утренний кофе можно заказать с вечера -->
+  <div class="night-art" id="nightArt" aria-hidden="true">
+    <i class="moon"></i>
+    <div class="nap"><div id="nightCup"></div><span class="zz"><b>z</b><b>z</b><b>Z</b></span><span class="tag" id="nightTag">08:10</span></div>
+  </div>
+  <div class="hero-copy">
+  <p class="eyebrow" id="heroEye">Кофейня на Примерной, 1</p>
+  <h1 id="heroH1">Ваш кофе готов<br>к&nbsp;<em>вашему приходу</em></h1>
+  <p class="lead" id="heroLead">Выберите стакан, сдвиньте человечка — сколько вам идти. Бариста сварит ровно к вашему приходу. Никакой очереди, оплата на месте.</p>
+  </div>
+  <!-- «Окошко»: заказ одного стакана прямо с первого экрана — напиток, «буду через…», SMS -->
+  <div class="qk" id="qk">
+    <p class="qk-head"><b>Окошко</b><span id="qkHint">один стакан — в два касания</span></p>
+    <div class="qk-cups" id="qkCups" role="radiogroup" aria-label="Напиток"></div>
+    <div class="qk-stage">
+      <div class="qk-cup" id="qkCup"></div>
+      <div class="qk-say"><b id="qkName">Капучино</b><span id="qkOpts"></span><button type="button" id="qkTune">настроить</button></div>
+    </div>
+    <label class="qk-when" for="qkRange"><span id="qkWhenT">Буду у вас через</span> <b id="qkWhen">15 мин</b></label>
+    <div class="qk-road" id="qkRoad">
+      <span class="qk-walker" id="qkWalker" aria-hidden="true">🚶</span>
+      <span class="qk-door" aria-hidden="true">☕</span>
+      <input type="range" id="qkRange" dir="rtl" min="0" max="10" step="1" value="1" aria-label="Через сколько вы будете у нас">
+    </div>
+    <div class="qk-ends" aria-hidden="true"><span id="qkFar">позже</span><span>уже рядом</span></div>
+    <!-- «Сколько мне идти?»: считаем путь по геопозиции (или по ориентиру) — человечек встаёт сам -->
+    <div class="gw" id="gw">
+      <button type="button" class="gw-ask" id="gwAsk"><i aria-hidden="true">📍</i><span><b>Не знаете, сколько идти?</b> Посчитаем по карте — человечек встанет сам</span></button>
+      <div class="gw-out" id="gwOut" hidden>
+        <svg class="gw-map" id="gwMap" viewBox="0 0 320 124" role="img" aria-labelledby="gwKm"></svg>
+        <div class="gw-say" aria-live="polite">
+          <p><b id="gwKm">—</b> <span id="gwSay"></span></p>
+          <div class="gw-mode" id="gwMode" role="radiogroup" aria-label="Как добираетесь"></div>
+          <button type="button" class="gw-redo" id="gwRedo">пересчитать</button>
+        </div>
+      </div>
+      <div class="gw-near" id="gwNear" hidden>
+        <p id="gwNearT">Не вышло определить место — откуда идёте?</p>
+        <div class="gw-chips" id="gwChips"></div>
+      </div>
+    </div>
+    <a class="btn big wide" id="qkSend" href="#">Заказать</a>
+    <p class="qk-note" id="qkNote">Откроется SMS с готовым текстом — нажмите «Отправить». Оплата на месте.</p>
+  </div>
+  <a class="hero-more" id="heroBtn" href="#menu">Несколько позиций или выпечка? Всё меню ↓</a>
+  <p class="where">📍 Мы во дворе, на 2 этаже — <a href="#route">как нас найти</a> · 👀 <a href="#nb">что берут соседи</a> · 🥐 <a href="#vt" id="heroVt">что осталось на витрине</a> · 🧭 <a href="#taste">не знаете, что взять?</a> · ⏰ <a href="#ritual">кофе по будильнику</a> · 🎁 <a href="#treat">угостить кого-то</a> · 🎙 <a href="#say">сказать заказ своими словами</a></p>
+  <button type="button" class="crew-cta" data-group>
+    <span class="crew-faces" aria-hidden="true"><i>А</i><i>Д</i><i>М</i><i>+</i></span>
+    <span><b>Берёте на весь офис?</b> Скиньте ссылку в чат — каждый выберет сам, вы отправите один заказ. Штампы за все стаканы — вам</span>
+  </button>
+</section>
+
+<!-- пришли по ссылке коллеги: выбираете свой напиток в общий заказ -->
+<section class="guest" id="guest" hidden>
+  <div class="guest-card">
+    <div class="guest-tray" id="gsTray"></div>
+    <div>
+      <p class="eyebrow">Общий заказ</p>
+      <h1 id="gsTitle"><span id="gsHost">Коллега</span> берёт кофе на всех.<br>А <em>вам что?</em></h1>
+      <p class="lead" id="gsLead">Выберите напиток в меню — он попадёт в общий заказ одной ссылкой. Ничего платить и отправлять в кофейню не нужно.</p>
+      <div class="guest-act">
+        <a class="btn big" id="gsGo" href="#menu">Выбрать свой ↓</a>
+        <button type="button" id="gsLeave">Нет, закажу себе сам</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- для вернувшихся: прошлый заказ в одно касание -->
+<section class="usual" id="usual" hidden>
+  <div class="ticket">
+    <p class="eyebrow" id="usualHi">С возвращением</p>
+    <h1>Как <em>обычно?</em></h1>
+    <ul id="usualLines"></ul>
+    <p class="usual-total"><span id="usualWhen"></span><b id="usualSum"></b></p>
+    <p class="usual-stamp" id="usualStamp" hidden></p>
+    <a class="btn wide big" id="usualSend" href="#">Заказать в одно касание</a>
+    <div class="usual-alt">
+      <button type="button" id="usualEdit">Изменить заказ</button>
+      <a href="#menu" id="usualNew">Хочу другое ↓</a>
+    </div>
+    <p class="note" id="usualNote">Откроется SMS с готовым текстом — останется нажать «Отправить». Оплата на месте.</p>
+  </div>
+</section>
+
+<!-- пришла открытка: вас угощают — выбираете, когда зайти, и забираете по коду -->
+<section class="present" id="present" hidden>
+  <div class="env" id="env">
+    <div class="env-back" aria-hidden="true"></div>
+    <div class="pc" id="psCard">
+      <div class="pc-stamp"><div id="psCup"></div><span>подарок</span></div>
+      <span class="pc-mark" aria-hidden="true">Зёрнышко<br>Примерная, 1</span>
+      <p class="pc-to"><span id="psTo">Привет</span>,</p>
+      <p class="pc-msg" id="psMsg"></p>
+      <p class="pc-gift">Угощаю: <b id="psDrink">капучино</b></p>
+      <p class="pc-from">— <span id="psFrom">друг</span></p>
+    </div>
+    <div class="env-front" aria-hidden="true"></div>
+  </div>
+  <div class="ps-main">
+    <p class="eyebrow">🎁 Вам открытка</p>
+    <h1><span id="psWho">Друг</span> угощает вас <em id="psWhat">кофе</em></h1>
+    <p class="lead">Платить ничего не нужно — это подарок. Выберите, когда зайдёте: бариста сварит ровно к этому времени.</p>
+    <p class="ps-code">Код у стойки <b id="psCode">000</b></p>
+    <h3 id="psSlotsHead">Когда зайдёте?</h3>
+    <div class="slots" id="psSlots"></div>
+    <a class="btn big wide" id="psSend" href="#">Забрать подарок</a>
+    <p class="note">Откроется SMS с готовым текстом — нажмите «Отправить». Мы во дворе, на 2 этаже — <a href="#route">как дойти</a>.</p>
+    <div class="ps-alt"><a href="#treat" id="psBack">🎁 Угостить в ответ</a><button type="button" id="psLater">Сначала посмотрю меню</button></div>
+  </div>
+</section>
+
+<!-- после отправки: живой талон заказа с отсчётом, пока заказ ждёт -->
+<section class="live" id="live" hidden>
+  <div class="live-card">
+    <div class="live-cup" id="liveCup"></div>
+    <div class="live-main">
+      <p class="eyebrow" id="liveNo">Заказ №—</p>
+      <h1 id="liveTitle">Будет готово <em>к —</em></h1>
+      <p class="live-left" id="liveLeft"></p>
+      <p class="live-geo" id="liveGeo" aria-live="polite"><button type="button" id="liveGeoAsk">📍 Успеваю? Проверить по карте</button></p>
+      <ol class="live-steps" id="liveSteps">
+        <li>Отправлен</li><li>Бариста варит</li><li>Готов — ждёт вас</li>
+      </ol>
+      <ul class="live-lines" id="liveLines"></ul>
+      <div class="live-act">
+        <a class="btn" href="#route">Как дойти</a>
+        <a class="btn ghost" href="tel:88000000000">Опаздываю — позвонить</a>
+      </div>
+      <a class="live-rt" href="#ritual">⏰ <span>Хотите так <b>каждое утро</b>? Поставьте кофейный будильник — дальше одно касание</span></a>
+      <p class="note">SMS не ушло? <a id="liveResend" href="#">Отправить ещё раз</a> · <button type="button" id="liveHide">Скрыть</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- «Очередь — мимо вас»: как обычно бывает у стойки в выбранное время — и ваш стакан, который уже ждёт на полке «С сайта» -->
+<section class="qu" id="qu">
+  <h2>Очередь — мимо вас <small id="quSub">так обычно бывает у стойки — а ваш стакан уже ждёт на полке</small></h2>
+  <div class="qu-card">
+    <svg class="qu-scene" id="quScene" viewBox="0 0 720 236" role="img" aria-labelledby="quSay">
+      <rect x="0" y="0" width="720" height="200" fill="#f3e7d8"/>
+      <rect x="0" y="200" width="720" height="36" fill="#e6d3bb"/>
+      <path d="M0 200H720" stroke="#2a1d15" stroke-width="2"/>
+      <rect x="14" y="72" width="50" height="128" fill="#fff3e0" stroke="#2a1d15" stroke-width="2"/>
+      <circle cx="56" cy="138" r="2.4" fill="#2a1d15"/>
+      <text x="39" y="64" text-anchor="middle" font-size="10" font-weight="700" fill="#7a6656" font-family="system-ui" letter-spacing="1">ВХОД</text>
+      <rect x="436" y="16" width="156" height="50" rx="4" fill="#2a1d15"/>
+      <text x="514" y="34" text-anchor="middle" font-size="10" font-weight="700" fill="#f3e7d8" font-family="system-ui" letter-spacing="2">МЕНЮ</text>
+      <g stroke="#f3e7d8" stroke-width="1.6" stroke-linecap="round" opacity=".55"><path d="M452 45h50M452 55h38M530 45h46M530 55h30"/></g>
+      <g id="quBarista">
+        <path d="M462 120V100q0-10 18-10t18 10V120Z" fill="#6b3e26" stroke="#2a1d15" stroke-width="2"/>
+        <path d="M470 120V104h20V120" fill="#fffaf3" stroke="#2a1d15" stroke-width="1.4"/>
+        <circle cx="480" cy="78" r="12" fill="#f1c9a5" stroke="#2a1d15" stroke-width="2"/>
+        <path d="M468 74q12-14 24 0" fill="#3b2214"/>
+      </g>
+      <rect x="522" y="78" width="74" height="42" rx="5" fill="#d6e4ea" stroke="#2a1d15" stroke-width="2"/>
+      <g fill="#2a1d15"><rect x="538" y="104" width="8" height="6"/><rect x="572" y="104" width="8" height="6"/></g>
+      <circle cx="559" cy="91" r="5" fill="#fff" stroke="#2a1d15" stroke-width="1.6"/>
+      <g class="qu-steam" fill="none" stroke="#2a1d15" stroke-width="1.6" stroke-linecap="round" opacity=".35"><path d="M542 72c-3-4 3-6 0-10"/><path d="M576 72c-3-4 3-6 0-10"/></g>
+      <rect x="430" y="128" width="204" height="72" fill="#c9a27e" stroke="#2a1d15" stroke-width="2"/>
+      <rect x="422" y="120" width="220" height="10" rx="2" fill="#6b3e26" stroke="#2a1d15" stroke-width="2"/>
+      <path d="M470 150h124" stroke="#2a1d15" stroke-width="1.2" opacity=".3"/>
+      <g id="quPeople"></g>
+      <g class="qu-shelf">
+        <rect x="652" y="72" width="62" height="20" rx="4" fill="#2f8a4f" stroke="#2a1d15" stroke-width="1.6"/>
+        <text x="683" y="86" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="system-ui" letter-spacing=".8">С САЙТА</text>
+        <path d="M656 146V200M710 146V200" stroke="#2a1d15" stroke-width="2.4"/>
+        <rect x="648" y="140" width="68" height="7" rx="2" fill="#6b3e26" stroke="#2a1d15" stroke-width="1.6"/>
+        <g class="qu-cup" id="quCup"></g>
+        <g class="qu-slip"><rect x="660" y="150" width="44" height="17" rx="2" fill="#fffaf3" stroke="#2a1d15" stroke-width="1.2"/><text id="quSlip" x="682" y="162" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a1d15" font-family="system-ui">к 08:40</text></g>
+      </g>
+      <g class="qu-you" id="quYou">
+        <g class="qu-bob">
+          <path d="M-5 222L-3 196M5 222L3 196" stroke="#2a1d15" stroke-width="5" stroke-linecap="round"/>
+          <rect x="-13" y="146" width="26" height="54" rx="11" fill="#d9822b" stroke="#2a1d15" stroke-width="2"/>
+          <circle cx="0" cy="132" r="11" fill="#f1c9a5" stroke="#2a1d15" stroke-width="2"/>
+          <path d="M-11 129q11-14 22 0" fill="#6b3e26"/>
+          <g class="qu-hand" id="quHand"></g>
+          <g class="qu-tag"><rect x="-18" y="100" width="36" height="17" rx="8.5" fill="#2a1d15"/><text x="0" y="112" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="system-ui">вы</text></g>
+        </g>
+      </g>
+    </svg>
+    <div class="qu-side">
+      <p class="qu-say" id="quSay" aria-live="polite"></p>
+      <div class="qu-vs">
+        <div><span>В очереди</span><b id="quWait">~10 мин</b></div>
+        <div class="me"><span>С заказом с сайта</span><b>0 мин</b></div>
+      </div>
+      <a class="btn big wide" id="quGo" href="#">Пройти без очереди</a>
+      <p class="qu-note">Откроется SMS с готовым текстом — нажмите «Отправить». Другой напиток — в <a href="#qk" id="quQk">окошке наверху</a>.</p>
+    </div>
+  </div>
+  <div class="qu-day">
+    <p class="qu-dl"><b id="quDay">Сегодня</b> · во сколько зайти? <span>высота — сколько людей у стойки обычно</span></p>
+    <div class="qu-bars" id="quBars" role="radiogroup" aria-label="Время, когда вы зайдёте"></div>
+  </div>
+</section>
+
+<!-- «Полка соседей»: подписанные маркером стаканы завсегдатаев — что пьют в это время дня и зачем; «Возьму как у Оли» в одно касание -->
+<section class="nb" id="nb">
+  <h2>Что берут соседи <small id="nbSub">подписанные стаканы тех, кто заказывает с сайта, — нажмите на любой</small></h2>
+  <div class="nb-tabs" id="nbTabs" role="tablist" aria-label="Время дня"></div>
+  <div class="nb-wrap">
+    <div class="nb-rack">
+      <div class="nb-sign"><b>С сайта</b><span id="nbCount">сегодня — 0 стаканов</span></div>
+      <ul class="nb-shelf" id="nbShelf" role="listbox" aria-label="Стаканы гостей"></ul>
+      <div class="nb-board" aria-hidden="true"></div>
+    </div>
+    <aside class="nb-note" id="nbNote" aria-live="polite">
+      <span class="nb-pin" aria-hidden="true"></span>
+      <p class="nb-who"><b id="nbName">Оля</b> <span id="nbSince"></span></p>
+      <p class="nb-msg" id="nbMsg"></p>
+      <p class="nb-what" id="nbWhat"></p>
+      <button type="button" class="btn big wide" id="nbTake">Возьму так же</button>
+      <button type="button" class="nb-tune" id="nbTune">Так же, но под себя</button>
+      <p class="nb-mine" id="nbMine"></p>
+    </aside>
+  </div>
+</section>
+
+<section class="menu" id="menu">
+  <h2>Меню <small>видно, что внутри · нажмите на напиток — соберите его под себя</small></h2>
+  <ul class="items" id="items">
+    <li><button data-name="Эспрессо" data-price="150"><b>Эспрессо</b><i>маленький · только кофе</i><span>150 ₽</span></button></li>
+    <li><button data-name="Американо" data-price="180"><b>Американо</b><i>средний · эспрессо + горячая вода</i><span>180 ₽</span></button></li>
+    <li><button data-name="Капучино" data-price="220"><b>Капучино</b><i>средний · поровну кофе, молока и пены</i><span>220 ₽</span></button></li>
+    <li><button data-name="Латте" data-price="240"><b>Латте</b><i>большой · много молока, мягкий вкус</i><span>240 ₽</span></button></li>
+    <li><button data-name="Раф" data-price="260"><b>Раф</b><i>большой · кофе, взбитый со сливками</i><span>260 ₽</span></button></li>
+    <li><button data-name="Чай" data-price="120"><b>Чай</b><i>чёрный или зелёный, чайник</i><span>120 ₽</span></button></li>
+    <li><button data-name="Круассан" data-price="140"><b>Круассан</b><i>1 шт.</i><span>140 ₽</span></button></li>
+    <li><button data-name="Пирожок с капустой" data-price="90"><b>Пирожок с капустой</b><i>1 шт.</i><span>90 ₽</span></button></li>
+    <li><button data-name="Синнабон" data-price="170"><b>Синнабон</b><i>корица и сливочная глазурь</i><span>170 ₽</span></button></li>
+    <li><button data-name="Морковный кекс" data-price="160"><b>Морковный кекс</b><i>кусочек · крем-чиз, грецкий орех</i><span>160 ₽</span></button></li>
+  </ul>
+  <a class="tc-link" href="#say">🎙 Лень листать? <b>Скажите заказ своими словами →</b></a>
+  <a class="tc-link" href="#taste">🧭 Не знаете, чем латте отличается от рафа? <b>Подберём по вкусу →</b></a>
+</section>
+
+<!-- «Витрина — сейчас»: сколько выпечки осталось на полках прямо сейчас; отложить к приходу, вечером — дешевле -->
+<section class="vt" id="vt">
+  <h2>Витрина <em id="vtNow">сейчас</em> <small id="vtSub">столько выпечки на полках в эту минуту — к обеду её разбирают</small></h2>
+  <div class="vt-wrap">
+    <div class="vt-case">
+      <div class="vt-sign"><b id="vtSign">Испекли утром</b><span id="vtClock">08:00</span></div>
+      <div class="vt-glass">
+        <ul class="vt-shelf" id="vtShelf"></ul>
+      </div>
+      <div class="vt-base"><i></i></div>
+    </div>
+    <aside class="vt-side">
+      <p class="vt-eve" id="vtEve" hidden></p>
+      <p class="vt-say" id="vtSay" aria-live="polite"></p>
+      <div class="vt-plate" id="vtPlate" aria-live="polite"></div>
+      <button type="button" class="btn big wide" id="vtGo" hidden>Оформить</button>
+      <p class="qu-note">Отложенное ставим на тарелку с номером вашего заказа — никто не возьмёт. Оплата на месте.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- «Скажите заказ»: как бариста у стойки — своими словами, голосом или текстом; бариста записывает в блокнот на глазах -->
+<section class="say" id="say">
+  <h2>Скажите заказ <small>как бариста у стойки — своими словами, голосом или текстом</small></h2>
+  <div class="sy">
+    <div class="sy-in">
+      <div class="sy-bubble">
+        <textarea id="syText" rows="3" maxlength="240" aria-label="Ваш заказ своими словами" placeholder="Например: два капучино на овсяном и круассан к 9:30" autocomplete="off" spellcheck="false"></textarea>
+        <button type="button" class="sy-mic" id="syMic" aria-label="Сказать голосом" hidden><i></i></button>
+      </div>
+      <p class="sy-heard" id="syHeard" aria-hidden="true"></p>
+      <p class="sy-legend" aria-hidden="true"><i class="p">напиток</i><i class="o">как сделать</i><i class="q">сколько</i><i class="t">когда</i></p>
+      <p class="sy-l">Попробуйте сказать</p>
+      <div class="sy-ex" id="syEx"></div>
+      <p class="sy-tip" id="syTip">🎙 На телефоне можно надиктовать: нажмите микрофон на клавиатуре.</p>
+    </div>
+    <div class="sy-pad" aria-live="polite">
+      <p class="sy-pad-h"><b>Бариста записал</b><span id="syNo">№—</span></p>
+      <div class="sy-empty" id="syEmpty"><span class="sy-pen" aria-hidden="true">✎</span>Говорите — я записываю.<br>Названия, молоко, сироп, «к девяти» или «через 15 минут» — всё пойму.</div>
+      <ul class="sy-lines" id="syLines"></ul>
+      <p class="sy-when" id="syWhen" hidden></p>
+      <p class="sy-miss" id="syMiss" hidden></p>
+      <p class="sy-sum" id="sySum" hidden><span>Итого</span><b id="syTotal"></b></p>
+      <button type="button" class="btn big wide" id="syGo" disabled>Всё верно — к оформлению</button>
+      <p class="sy-note">Ничего не уйдёт без вас: дальше вы увидите заказ и отправите его по SMS. Оплата на месте.</p>
+    </div>
+  </div>
+</section>
+
+<!-- вкусовой компас: не знаете названий — тянете зёрнышко туда, «как любите», стакан превращается в ваш напиток -->
+<section class="taste" id="taste">
+  <h2>Вкусовой компас <small>не нужно знать названия — просто скажите, какой кофе вы любите</small></h2>
+  <div class="tc">
+    <div class="tc-pad" id="tcPad" role="slider" tabindex="0" aria-label="Вкус: крепость и сладость. Стрелки — двигать" aria-valuetext="">
+      <span class="ax ax-l">мягче, больше молока</span><span class="ax ax-r">крепче, больше кофе</span>
+      <span class="ax ax-t">сладко</span><span class="ax ax-b">без сладкого</span>
+      <div class="tc-field" id="tcField"><div id="tcDots"></div><i class="tc-bean" id="tcBean"><b></b></i></div>
+      <span class="tc-hint" id="tcHint">тяните зёрнышко</span>
+    </div>
+    <div class="tc-out" aria-live="polite">
+      <div class="tc-cup" id="tcCup"></div>
+      <p class="eyebrow" id="tcMood">Ваш вкус</p>
+      <h3 id="tcName">Капучино</h3>
+      <p class="tc-say" id="tcSay"></p>
+      <div class="tc-meter"><span>кофе</span><i id="tcMk"></i><span>молоко</span></div>
+      <button type="button" class="btn big wide" id="tcTake">Беру</button>
+      <button type="button" class="tc-tune" id="tcTune">Подстроить под себя</button>
+    </div>
+  </div>
+</section>
+
+<!-- кофейный будильник: напоминание в календаре телефона каждое утро → касание → заказ уже собран, осталось «Отправить» -->
+<section class="ritual" id="ritual">
+  <h2>Кофейный будильник <small>настроили один раз — дальше утренний кофе в одно касание</small></h2>
+  <div class="rt">
+    <div class="rt-set">
+      <p class="rt-l">Что пьёте по утрам</p>
+      <div class="qk-cups" id="rtCups" role="radiogroup" aria-label="Утренний напиток"></div>
+      <p class="rt-l">По каким дням <span id="rtDaysT">будни</span></p>
+      <div class="rt-days" id="rtDays" role="group" aria-label="Дни недели"></div>
+      <div class="rt-two">
+        <div>
+          <p class="rt-l">Напомнить в</p>
+          <div class="rt-time"><button type="button" id="rtMinus" aria-label="На 5 минут раньше">−</button><b id="rtAt" aria-live="polite">08:20</b><button type="button" id="rtPlus" aria-label="На 5 минут позже">+</button></div>
+        </div>
+        <div>
+          <p class="rt-l">Сколько до нас идти</p>
+          <div class="rt-walk" id="rtWalk" role="radiogroup" aria-label="Время в пути"></div>
+        </div>
+      </div>
+      <p class="rt-warn" id="rtWarn" hidden></p>
+    </div>
+    <div class="rt-show">
+      <a class="rt-phone" id="rtPhone" href="#" aria-label="Так будет выглядеть напоминание — нажмите, чтобы попробовать">
+        <span class="rt-sun" aria-hidden="true"></span>
+        <span class="rt-date" id="rtDate">вторник, 10 ноября</span>
+        <span class="rt-clock" id="rtClock">08:20</span>
+        <span class="rt-note">
+          <span class="rt-app"><i>☕</i>Календарь<em>сейчас</em></span>
+          <b id="rtTitle">Капучино — к 08:35</b>
+          <span id="rtBody">Нажмите — заказ уже собран, останется «Отправить»</span>
+        </span>
+        <span class="rt-tap" aria-hidden="true"></span>
+        <span class="rt-try">нажмите на уведомление — так оно сработает утром</span>
+      </a>
+      <button type="button" class="btn big wide" id="rtAdd">⏰ Поставить будильник</button>
+      <p class="rt-alt"><a id="rtG" href="#" target="_blank" rel="noopener">Google Календарь</a> · <span>iPhone и Android — файлом в «Календарь»</span></p>
+      <p class="rt-perk" id="rtPerk"></p>
+    </div>
+  </div>
+</section>
+
+<!-- угостить: открытка-ссылка для друга — вы платите вместе со своим заказом, друг забирает по коду -->
+<section class="treat" id="treat">
+  <h2>Угостить кофе <small>платите вы, вместе со своим заказом — друг получает открытку и забирает по коду</small></h2>
+  <div class="tr">
+    <div class="tr-show">
+      <div class="pc" id="trCard">
+        <div class="pc-stamp"><div id="trCup"></div><span id="trPrice">220 ₽</span></div>
+        <span class="pc-mark" aria-hidden="true">Зёрнышко<br>Примерная, 1</span>
+        <p class="pc-to"><span id="trToT">Аня</span>,</p>
+        <p class="pc-msg" id="trMsgT">спасибо, что выручили!</p>
+        <p class="pc-gift">Угощаю: <b id="trDrinkT">капучино</b></p>
+        <p class="pc-from">— <span id="trFromT">ваше имя</span></p>
+      </div>
+      <ul class="tr-sent" id="trSent"></ul>
+    </div>
+    <div class="tr-set">
+      <label class="tr-l" for="trTo">Кого угощаете</label>
+      <input class="tr-in" id="trTo" maxlength="20" placeholder="Например, Аня" autocomplete="off">
+      <p class="tr-l">Что взять в подарок</p>
+      <div class="qk-cups" id="trCups" role="radiogroup" aria-label="Напиток в подарок"></div>
+      <p class="tr-l">Пара слов</p>
+      <div class="tr-why" id="trWhy"></div>
+      <input class="tr-in" id="trMsg" maxlength="80" aria-label="Ваше пожелание">
+      <label class="tr-l" for="trFrom">От кого</label>
+      <input class="tr-in" id="trFrom" maxlength="20" placeholder="Ваше имя" autocomplete="given-name">
+      <button type="button" class="btn big wide" id="trGo">🎁 Угостить</button>
+      <p class="tr-note">Подарок встанет в корзину — оплатите его на месте вместе со своим заказом (или просто зайдите оплатить). Сразу после отправки заказа получите ссылку-открытку для друга.</p>
+    </div>
+  </div>
+</section>
+
+<!-- мы спрятаны во дворе: рисованный маршрут, чтобы первый заказ не остыл, пока нас ищут -->
+<section class="route" id="route">
+  <h2>Как дойти <small>мы во дворе, на 2 этаже — вот дорога</small></h2>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#d9822b"/></marker>
+  </defs></svg>
+  <ol class="steps">
+    <li style="--i:0">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <rect x="30" y="22" width="100" height="82" fill="#efe1cf" stroke="#2a1d15" stroke-width="2.2"/>
+        <path d="M24 22H136" stroke="#2a1d15" stroke-width="3.5" stroke-linecap="round"/>
+        <g fill="#d6e4ea" stroke="#2a1d15" stroke-width="1.6"><rect x="42" y="31" width="16" height="15"/><rect x="72" y="31" width="16" height="15"/><rect x="102" y="31" width="16" height="15"/></g>
+        <rect x="38" y="52" width="54" height="11" fill="#2f8a4f" stroke="#2a1d15" stroke-width="1.6"/>
+        <text x="65" y="60.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff" font-family="system-ui" letter-spacing=".8">АПТЕКА</text>
+        <rect x="40" y="66" width="50" height="38" fill="#fff" stroke="#2a1d15" stroke-width="1.6"/>
+        <path d="M65 66V104" stroke="#2a1d15" stroke-width="1.2"/>
+        <rect x="98" y="70" width="22" height="34" fill="#c9b49c" stroke="#2a1d15" stroke-width="1.6"/>
+        <path class="glow" d="M104 50h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#2f8a4f" stroke="#2a1d15" stroke-width="1.2"/>
+        <path d="M0 104H160" stroke="#2a1d15" stroke-width="2"/>
+        <path class="walk" d="M8 114Q50 118 74 110" fill="none" stroke="#d9822b" stroke-width="2.6" stroke-linecap="round" marker-end="url(#arr)"/>
+      </svg>
+      <b>Найдите аптеку</b><span>Это наш дом — ул.&nbsp;Примерная,&nbsp;1</span>
+    </li>
+    <li style="--i:1">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <rect x="18" y="30" width="62" height="74" fill="#efe1cf" stroke="#2a1d15" stroke-width="2.2"/>
+        <path d="M80 30L114 42V104H80Z" fill="#e0caae" stroke="#2a1d15" stroke-width="2.2" stroke-linejoin="round"/>
+        <g fill="#d6e4ea" stroke="#2a1d15" stroke-width="1.5"><rect x="28" y="40" width="14" height="13"/><rect x="56" y="40" width="14" height="13"/></g>
+        <path d="M46 76h5v-5h5v5h5v5h-5v5h-5v-5h-5z" fill="#2f8a4f" stroke="#2a1d15" stroke-width="1"/>
+        <path class="glow" d="M92 104V78L104 82V104Z" fill="#d9822b" stroke="#2a1d15" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M138 104V82" stroke="#2a1d15" stroke-width="2.4"/>
+        <circle cx="138" cy="70" r="16" fill="#a9c28a" stroke="#2a1d15" stroke-width="2"/>
+        <path d="M0 104H160" stroke="#2a1d15" stroke-width="2"/>
+        <path class="walk" d="M6 114Q70 120 122 112Q132 108 104 100" fill="none" stroke="#d9822b" stroke-width="2.6" stroke-linecap="round" marker-end="url(#arr)"/>
+      </svg>
+      <b>Зайдите во двор</b><span>Вход не с улицы — обойдите дом</span>
+    </li>
+    <li style="--i:2">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <path d="M14 104H40V90H62V76H84V62H106V48H146V104Z" fill="#efe1cf" stroke="#2a1d15" stroke-width="2.2" stroke-linejoin="round"/>
+        <path d="M26 80L118 24" stroke="#2a1d15" stroke-width="2.4" stroke-linecap="round"/>
+        <g stroke="#2a1d15" stroke-width="1.6"><path d="M51 65V90"/><path d="M73 51V76"/><path d="M95 38V62"/></g>
+        <circle class="glow" cx="132" cy="24" r="14" fill="#fff" stroke="#2a1d15" stroke-width="2"/>
+        <text x="132" y="30.5" text-anchor="middle" font-size="18" font-weight="700" fill="#6b3e26" font-family="Georgia,serif">2</text>
+        <path class="walk" d="M20 98L52 84L74 70L96 56L124 44" fill="none" stroke="#d9822b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arr)"/>
+      </svg>
+      <b>Поднимитесь на 2 этаж</b><span>Один пролёт, никуда не сворачивая</span>
+    </li>
+    <li style="--i:3" class="last">
+      <svg viewBox="0 0 160 120" aria-hidden="true">
+        <path class="light" d="M94 104H140L160 120H78Z" fill="#d9822b" opacity=".28"/>
+        <rect x="18" y="40" width="36" height="64" fill="#d8c7b2" stroke="#2a1d15" stroke-width="2"/>
+        <circle cx="48" cy="74" r="2" fill="#2a1d15"/>
+        <rect class="glow" x="94" y="40" width="46" height="64" fill="#fff3e0" stroke="#2a1d15" stroke-width="2.2"/>
+        <circle cx="100" cy="74" r="2" fill="#2a1d15"/>
+        <path d="M108 58h20l-2.5 17h-15z" fill="#6b3e26" stroke="#2a1d15" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M127 61c6 0 6 9-1 9" fill="none" stroke="#2a1d15" stroke-width="1.8"/>
+        <g class="steam" fill="none" stroke="#2a1d15" stroke-width="1.6" stroke-linecap="round" opacity=".45"><path d="M113 52c-3-4 3-6 0-10"/><path d="M122 52c-3-4 3-6 0-10"/></g>
+        <path d="M0 104H160" stroke="#2a1d15" stroke-width="2"/>
+        <path class="walk" d="M8 114Q60 120 104 108" fill="none" stroke="#d9822b" stroke-width="2.6" stroke-linecap="round" marker-end="url(#arr)"/>
+      </svg>
+      <b>Дверь направо</b><span>Пахнет кофе — вы у нас. Заказ уже ждёт</span>
+    </li>
+  </ol>
+  <div class="route-cta">
+    <a class="btn ghost" href="https://yandex.ru/maps/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D1%83%D0%BB.%20%D0%9F%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D0%BD%D0%B0%D1%8F%2C%201" target="_blank" rel="noopener">Открыть на карте</a>
+    <a href="tel:88000000000">Заблудились? Позвоните — встретим</a>
+  </div>
+</section>
+
+<!-- карта гостя: штампы ставятся сами за каждый кофе, заказанный на сайте -->
+<section class="loyal" id="loyal">
+  <div class="card">
+    <div class="card-head"><b>Карта гостя</b><span>Зёрнышко · каждый 10-й кофе — в подарок</span></div>
+    <div id="stampBox"></div>
+    <p class="card-text" id="stampText"></p>
+  </div>
+</section>
+
+<section class="info">
+  <div>
+    <h3>Часы работы</h3>
+    <p>Пн–Пт 8:00–21:00<br>Сб–Вс 10:00–20:00<br>Без перерыва</p>
+  </div>
+  <div>
+    <h3>Как найти</h3>
+    <p>Москва, ул. Примерная, 1.<br>Вход со двора, 2 этаж, дверь направо.<br><a href="#route">Маршрут в картинках ↑</a></p>
+  </div>
+  <div>
+    <h3>Телефон</h3>
+    <p><a href="tel:88000000000">8-800-000-00-00</a></p>
+  </div>
+</section>
+
+<footer>© Кофейня «Зёрнышко», 2011–2026</footer>
+
+<!-- липкая корзина -->
+<div class="bar" id="bar" hidden>
+  <button class="bar-open" id="barOpen"><span id="barCount">0</span> · <span id="barSum">0 ₽</span><b>Оформить →</b></button>
+</div>
+
+<!-- оформление -->
+<dialog id="checkout">
+  <form method="dialog" class="sheet">
+    <button class="x" value="close" aria-label="Закрыть">×</button>
+    <h2>Ваш заказ</h2>
+    <ul id="lines"></ul>
+    <p class="total">Итого: <b id="total">0 ₽</b> <small>оплата на месте</small></p>
+    <div class="ck-stamps" id="ckStamps"></div>
+    <button type="button" class="crew-mini" data-group>👥 Позвать коллег — пусть каждый выберет сам</button>
+    <h3 id="slotsHead">Когда заберёте?</h3>
+    <div class="slots" id="slots"></div>
+    <p class="note">Заказ ждёт вас 15 минут после выбранного времени. Впервые у нас? Вход со двора — <a href="#route" id="toRoute">как дойти</a>.</p>
+    <a class="btn wide" id="send" href="#">Отправить заказ по SMS</a>
+    <a class="btn ghost wide" id="call" href="tel:88000000000">Или позвонить и продиктовать</a>
+  </form>
+</dialog>
+
+<!-- конструктор напитка: стакан меняется на глазах -->
+<dialog id="custom" class="custom">
+  <form method="dialog" class="sheet">
+    <button class="x" value="close" aria-label="Закрыть">×</button>
+    <div class="cz">
+      <div class="cz-art" id="czArt"></div>
+      <div class="cz-main">
+        <p class="eyebrow" id="czHint">Ваш напиток</p>
+        <h2 id="czName">Капучино</h2>
+        <p class="cz-sum" id="czSum"></p>
+        <div id="czGroups"></div>
+        <fieldset class="cz-pair" id="czPair"><legend>И к нему?</legend><div class="chips"></div></fieldset>
+      </div>
+    </div>
+    <button type="button" class="btn wide big" id="czAdd">Добавить</button>
+  </form>
+</dialog>
+
+<!-- заказ на компанию: организатор -->
+<dialog id="group" class="group">
+  <form method="dialog" class="sheet">
+    <button class="x" value="close" aria-label="Закрыть">×</button>
+    <p class="eyebrow">Заказ на компанию</p>
+    <h2>Кофе на всех — <em>каждый выберет сам</em></h2>
+    <div class="tray" id="gTray"></div>
+    <ol class="g-how"><li>Скиньте ссылку в рабочий чат</li><li>Коллеги выберут напиток и пришлют ссылку обратно</li><li>Одно SMS — и всё стоит на стойке в подстаканнике</li><li>Штампы за каждый стакан идут в вашу карту гостя 🎁</li></ol>
+    <label class="g-name">Ваше имя — его увидят коллеги<input id="gHost" maxlength="20" placeholder="Например, Дима" autocomplete="given-name"></label>
+    <div class="share" id="gShare"></div>
+    <ul class="g-people" id="gPeople"></ul>
+    <button type="button" class="btn wide" id="gGo">Оформить</button>
+  </form>
+</dialog>
+
+<!-- заказ на компанию: гость возвращает свой выбор -->
+<dialog id="hand" class="group">
+  <form method="dialog" class="sheet">
+    <button class="x" value="close" aria-label="Закрыть">×</button>
+    <p class="eyebrow" id="hHost">Собирает: —</p>
+    <h2>В общий <em>заказ</em></h2>
+    <ul class="g-mine" id="hLines"></ul>
+    <label class="g-name">Ваше имя — чтобы было понятно, чей стакан<input id="hName" maxlength="20" placeholder="Например, Аня" autocomplete="given-name"></label>
+    <div class="share" id="hShare"></div>
+    <p class="note">Ссылку нужно отправить тому, кто собирает заказ, — по ней ваш напиток сам добавится в его корзину.</p>
+  </form>
+</dialog>
+
+<!-- подарок в заказе — отправляем другу открытку-ссылку -->
+<dialog id="sendGift" class="group">
+  <form method="dialog" class="sheet">
+    <button class="x" value="close" aria-label="Закрыть">×</button>
+    <p class="eyebrow">Подарок в заказе</p>
+    <h2 id="sgTitle">Открытка <em>готова</em></h2>
+    <div class="sg-card" id="sgCard"></div>
+    <div class="share" id="sgShare"></div>
+    <p class="note">Друг откроет ссылку, выберет время и заберёт по коду. Подарок ждёт 30 дней. Эта открытка останется и в разделе «Угостить кофе».</p>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const cart = {};
+const $ = id => document.getElementById(id);
+const rub = n => n.toLocaleString('ru') + ' ₽';
+let slot = null;
+// «Угостить кофе»: подарки лежат в корзине рядом с вашим заказом и оплачиваются вместе с ним
+const GF = 'zr-gifts', GV = 'zr-given', PS = 'zr-present';
+let gifts = []; try { const o = JSON.parse(localStorage.getItem(GF)); if (o && Date.now() - o.at < 8 * 36e5) gifts = o.g || []; } catch (e) {}
+const saveGifts = () => { try { localStorage.setItem(GF, JSON.stringify({ g: gifts, at: Date.now() })); } catch (e) {} };
+// заказ на компанию: group — я собираю на всех, guest — я выбираю в чужой заказ
+const GK = 'zr-group', GU = 'zr-guest', NM = 'zr-name';
+const ld = (k, ttl) => { try { const o = JSON.parse(localStorage.getItem(k)); return o && Date.now() - o.at < ttl ? o : null; } catch (e) { return null; } };
+let group = ld(GK, 8 * 36e5), guest = ld(GU, 3 * 36e5);
+const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+
+// Рисованное меню: каждый напиток — стакан в разрезе, видно, из чего он состоит
+const COL = { esp: '#3b2214', crema: '#c08045', water: '#6a3f24', milk: '#f1e2cc', foam: '#fffaf2', cream: '#dcb98f', tea: '#c8711f' };
+const DRINKS = {
+  'Эспрессо':  { w: 34, h: 26, cup: 1, l: [['esp', .62], ['crema', .14]] },
+  'Американо': { w: 44, h: 50, l: [['water', .76], ['crema', .06]] },
+  'Капучино':  { w: 50, h: 42, cup: 1, l: [['esp', .28], ['milk', .3], ['foam', .3]] },
+  'Латте':     { w: 40, h: 66, l: [['esp', .18], ['milk', .6], ['foam', .12]] },
+  'Раф':       { w: 40, h: 66, l: [['cream', .74], ['foam', .12]] },
+  'Чай':       { w: 42, h: 46, bag: 1, l: [['tea', .78]] },
+};
+// Опции напитка. Название позиции само себя описывает: «Капучино · большой · на овсяном · ваниль»
+const OPT = {
+  big:    { t: 'большой',      p: 60 },
+  double: { t: 'двойной',      p: 70 },
+  shot:   { t: '+ шот',        p: 60 },
+  oat:    { t: 'на овсяном',   p: 60, milk: '#e6cc9c', foam: '#f5e7cb' },
+  coco:   { t: 'на кокосовом', p: 60, milk: '#fbf7ee', foam: '#ffffff' },
+  lf:     { t: 'безлактозное', p: 40 },
+  van:    { t: 'ваниль',       p: 40, syr: '#f1d77e' },
+  car:    { t: 'карамель',     p: 40, syr: '#c9772a' },
+  nut:    { t: 'лесной орех',  p: 40, syr: '#8e5a33' },
+  green:  { t: 'зелёный',      p: 0 },
+  lemon:  { t: 'с лимоном',    p: 20 },
+};
+const BYT = Object.fromEntries(Object.entries(OPT).map(([k, v]) => [v.t, k]));
+const SIZE = ['Объём', [['', 'стандарт'], ['big', 'побольше']]];
+const SYR = ['Сироп', [['', 'без сиропа'], ['van', 'ваниль'], ['car', 'карамель'], ['nut', 'орех']]];
+const MILK = ['Молоко', [['', 'обычное'], ['oat', 'овсяное'], ['coco', 'кокосовое'], ['lf', 'без лактозы']]];
+const STRONG = ['Крепость', [['', 'как обычно'], ['shot', 'покрепче']]];
+const CUSTOM = {
+  'Эспрессо':  [['Порция', [['', 'одинарный'], ['double', 'двойной']]], SYR],
+  'Американо': [SIZE, STRONG, SYR],
+  'Капучино':  [SIZE, MILK, STRONG, SYR],
+  'Латте':     [SIZE, MILK, STRONG, SYR],
+  'Раф':       [SIZE, SYR],
+  'Чай':       [['Какой', [['', 'чёрный'], ['green', 'зелёный']]], ['Лимон', [['', 'без лимона'], ['lemon', 'с лимоном']]]],
+};
+const parse = label => { const [base, ...r] = String(label).split(' · '); return { base, keys: r.map(t => BYT[t]).filter(Boolean) }; };
+const nice = label => { const { base, keys } = parse(label); return base + (keys.length ? `<small>${keys.map(k => OPT[k].t).join(', ')}</small>` : ''); };
+
+let artId = 0;
+// выпечка рисуется одинаково в меню, корзине и на витрине
+const BAKE = {
+  'Круассан': `<g stroke="#9a5a22" stroke-width="2" fill="#dc9b4f">` +
+    [[24, 74, 9, 7, -35], [76, 74, 9, 7, 35], [35, 66, 13, 10, -18], [65, 66, 13, 10, 18], [50, 63, 15, 13, 0]]
+      .map(([x, y, rx, ry, r]) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" transform="rotate(${r} ${x} ${y})"/>`).join('') +
+    `</g><path d="M44 57q6-3 12 0" stroke="#f6d39b" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+  'Пирожок с капустой': `<path d="M16 76Q50 38 84 76Q50 90 16 76Z" fill="#d4914a" stroke="#9a5a22" stroke-width="2" stroke-linejoin="round"/>` +
+    `<path d="M24 68q4 3 7-1q4 3 7-2q4 3 8-2q4 3 8 0q4 3 8 2q4 3 8 3" fill="none" stroke="#9a5a22" stroke-width="1.6"/>` +
+    `<path d="M34 64q12-8 26-6" stroke="#f3cf95" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  'Синнабон': `<path d="M18 74Q18 50 50 48Q82 50 82 74Q82 86 50 86Q18 86 18 74Z" fill="#cf8640" stroke="#9a5a22" stroke-width="2"/>` +
+    `<path d="M30 76c6 5 34 5 40 0" fill="none" stroke="#8a4b1b" stroke-width="1.8" stroke-linecap="round"/>` +
+    `<path d="M24 62Q30 50 50 49Q70 50 76 62q-3 6-6 1q-3 8-7 2q-4 7-8 1q-4 7-8 0q-4 6-7-1q-4 5-6-1q-4 4-8-2Z" fill="#fffaf2" stroke="#9a5a22" stroke-width="1.4" stroke-linejoin="round"/>` +
+    `<path d="M50 57c3 0 4 2 2 3c-4 2-8-1-5-4c3-3 10-2 11 2" fill="none" stroke="#c9a27e" stroke-width="1.4" stroke-linecap="round"/>`,
+  'Морковный кекс': `<path d="M16 60L62 50L84 60L38 72Z" fill="#fff3e0" stroke="#9a5a22" stroke-width="2" stroke-linejoin="round"/>` +
+    `<path d="M38 72L84 60V82L38 92Z" fill="#d07a33" stroke="#9a5a22" stroke-width="2" stroke-linejoin="round"/>` +
+    `<path d="M16 60L38 72V92L16 80Z" fill="#b8652a" stroke="#9a5a22" stroke-width="2" stroke-linejoin="round"/>` +
+    `<path d="M38 82L84 71M16 70L38 82" stroke="#fff3e0" stroke-width="3"/>` +
+    `<path d="M47 57l9-3" stroke="#e8772e" stroke-width="4" stroke-linecap="round"/><path d="M56 54l3-3M56 54h4" stroke="#5f8a3a" stroke-width="1.6" stroke-linecap="round"/>`,
+};
+function art(label, mini) {
+  const { base: name, keys } = parse(label), o = new Set(keys);
+  const id = 'cl' + (artId++), d0 = DRINKS[name], ink = '#2a1d15';
+  let g = '';
+  if (d0) {
+    const k = o.has('big') ? 1.2 : o.has('double') ? 1.3 : 1;
+    const d = { ...d0, h: d0.h * k, w: d0.w * (1 + (k - 1) * .4) };
+    const milk = keys.map(x => OPT[x]).find(x => x.milk), syr = keys.map(x => OPT[x]).find(x => x.syr);
+    let l = d0.l.map(([c, f]) => [c === 'milk' && milk ? milk.milk : c === 'foam' && milk ? milk.foam : c === 'tea' && o.has('green') ? '#a3a540' : COL[c], f]);
+    if (o.has('shot')) l.unshift([COL.esp, .14]);
+    if (syr) l.unshift([syr.syr, .1]);
+    const tot = l.reduce((s, [, f]) => s + f, 0);
+    if (tot > .9) l = l.map(([c, f]) => [c, f * .9 / tot]);
+    const base = d.cup ? 86 : 90, top = base - d.h, bw = d.w * .76;
+    const glass = `M${50 - d.w / 2} ${top}L${50 + d.w / 2} ${top}L${50 + bw / 2} ${base}L${50 - bw / 2} ${base}Z`;
+    let acc = 0, layers = '';
+    l.forEach(([c, f]) => {
+      const hh = f * d.h; acc += hh;
+      layers += `<rect x="0" y="${base - acc}" width="100" height="${hh + .5}" fill="${c}"/>`;
+    });
+    g += `<ellipse cx="50" cy="${d.cup ? 93 : 92}" rx="${d.w * .62}" ry="3.5" fill="${ink}" opacity=".12"/>`;
+    if (d.cup) g += `<ellipse cx="50" cy="89" rx="${d.w * .78}" ry="4" fill="#fff" stroke="${ink}" stroke-width="2"/>` +
+      `<path d="M${50 + d.w / 2 - 3} ${top + d.h * .25}c11 0 11 ${d.h * .45} 0 ${d.h * .5}" fill="none" stroke="${ink}" stroke-width="2.4"/>`;
+    g += `<clipPath id="${id}"><path d="${glass}"/></clipPath>` +
+      `<path d="${glass}" fill="#fff" opacity=".7"/>` +
+      `<g clip-path="url(#${id})"><g class="fill">${layers}</g></g>` +
+      `<path d="${glass}" fill="none" stroke="${ink}" stroke-width="2.2" stroke-linejoin="round"/>` +
+      `<path d="M${50 - d.w / 2 + 5} ${top + 5}L${50 - bw / 2 + 4} ${base - 6}" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>`;
+    if (o.has('lemon')) { const lx = 50 - d.w / 2 + 7, ly = top + 3;
+      g += `<circle cx="${lx}" cy="${ly}" r="7" fill="#f4d35e" stroke="${ink}" stroke-width="1.4"/><circle cx="${lx}" cy="${ly}" r="4.2" fill="none" stroke="#fff" stroke-width="1"/><path d="M${lx - 4} ${ly}h8M${lx} ${ly - 4}v8" stroke="#fff" stroke-width=".9"/>`; }
+    if (d.bag) g +=`<path d="M${50 + 6} ${top + 14}L${50 + d.w / 2 + 2} ${top - 2}l2 14" fill="none" stroke="${ink}" stroke-width="1.2"/><rect x="${50 + d.w / 2 - 2}" y="${top + 12}" width="10" height="9" rx="1.5" fill="#e9c46a" stroke="${ink}" stroke-width="1.2"/>`;
+    if (!mini) g += `<g class="steam" fill="none" stroke="${ink}" stroke-width="1.8" stroke-linecap="round" opacity=".35">` +
+      `<path d="M44 ${top - 6}c-4-5 4-8 0-14"/><path d="M56 ${top - 4}c-4-5 4-8 0-14"/></g>`;
+  } else g = `<ellipse cx="50" cy="86" rx="34" ry="4" fill="${ink}" opacity=".12"/>` + (BAKE[name] || BAKE['Пирожок с капустой']);
+  return `<svg class="art${mini ? ' mini' : ''}" viewBox="0 0 100 100" aria-hidden="true">${g}</svg>`;
+}
+document.querySelectorAll('#items button').forEach((b, i) => {
+  b.insertAdjacentHTML('afterbegin', art(b.dataset.name));
+  b.style.setProperty('--d', i * 70 + 'ms');
+});
+
+// статус «открыто»
+function hours(d) { const w = d.getDay(); return (w === 0 || w === 6) ? [10, 20] : [8, 21]; }
+(function () {
+  const now = new Date(), [o, c] = hours(now), h = now.getHours() + now.getMinutes() / 60;
+  const s = $('status');
+  if (h >= o && h < c) { s.textContent = '● Открыто до ' + c + ':00'; s.classList.add('open'); }
+  else { s.textContent = '● Закрыто · откроемся в ' + (h >= c ? hours(new Date(now.getTime() + 864e5))[0] : o) + ':00'; }
+})();
+
+const PRICE = {}, CARD = {};
+document.querySelectorAll('#items button').forEach(b => { PRICE[b.dataset.name] = +b.dataset.price; CARD[b.dataset.name] = b; });
+// «Вечерняя витрина»: за два часа до закрытия всё, что осталось из выпечки, — на 30% дешевле (бариста видит пометку в SMS)
+const BASE = { ...PRICE };
+const EVE = (() => { const n = new Date(), [, c] = hours(n), h = n.getHours() + n.getMinutes() / 60; return h >= c - 2 && h < c - .25; })();
+if (EVE) Object.keys(BAKE).forEach(n => {
+  PRICE[n] = Math.round(BASE[n] * .7 / 5) * 5;
+  const sp = CARD[n] && CARD[n].querySelector('span'); if (sp) sp.innerHTML = `<s>${BASE[n]}</s> ${rub(PRICE[n])} <em class="vt-off">−30%</em>`;
+});
+const isBake = n => !!BAKE[parse(n).base];
+const eveNote = items => EVE && items.some(([n]) => isBake(n)) ? ' Выпечка — по цене вечерней витрины (−30%).' : '';
+const priceOf = label => { const { base, keys } = parse(label); return (PRICE[base] || 0) + keys.reduce((s, k) => s + OPT[k].p, 0); };
+// ——— Карта гостя: каждый кофе с сайта — штамп, 10-й — в подарок, скидка считается сама ———
+const ST = 'zr-stamps';
+const readStamps = () => { try { const o = JSON.parse(localStorage.getItem(ST)); if (o && Array.isArray(o.log)) return o; } catch (e) {} return { n: 0, log: [], last: 0 }; };
+const isCoffee = n => { const b = parse(n).base; return DRINKS[b] && b !== 'Чай'; };
+const cupsOf = items => items.flatMap(([n, q]) => isCoffee(n) ? Array(q).fill(n) : []);
+function bonus(items) {
+  const s = readStamps().n, c = cupsOf(items);
+  const free = Math.floor((s + c.length) / 10) - Math.floor(s / 10);
+  const gifts = c.slice().sort((a, b) => priceOf(a) - priceOf(b)).slice(0, free); // в подарок — самый недорогой из стаканов
+  return { s, c, free, gifts, off: gifts.reduce((x, n) => x + priceOf(n), 0) };
+}
+const giftNote = b => b.free ? ` 🎁 По карте гостя в подарок: ${b.gifts.map(n => parse(n).base).join(', ')} (штампы ${b.s % 10}/9).` : '';
+function addStamps(items, no) {
+  const c = cupsOf(items); if (!c.length) return 0;
+  const o = readStamps(), at = Date.now();
+  o.n += c.length; o.last = at;
+  o.log = o.log.concat(c.map(n => ({ d: parse(n).base, at, no }))).slice(-20);
+  try { localStorage.setItem(ST, JSON.stringify(o)); } catch (e) {}
+  return c.length;
+}
+function stampCard(pend) {
+  const o = readStamps(), fresh = o.last && Date.now() - o.last < 6e5;
+  let cyc = o.n % 10;
+  if (!cyc && o.n && fresh && !pend.length) cyc = 10; // только что закрыли карту — даём полюбоваться
+  const real = cyc ? o.log.slice(-cyc) : [];
+  let li = '';
+  for (let i = 0; i < 10; i++) {
+    const gift = i === 9, cls = [gift && 'gift'];
+    let inner = gift ? '<span>🎁</span>' : `<span>${i + 1}</span>`;
+    if (i < real.length) { const e = real[i]; cls.push('on', fresh && e.at === o.last && 'new'); inner = art(e.d, 1) + (gift ? '<em>подарок</em>' : ''); }
+    else if (i < cyc + pend.length) { cls.push('ghost'); inner = art(pend[i - cyc], 1) + (gift ? '<em>в подарок</em>' : ''); }
+    li += `<li class="${cls.filter(Boolean).join(' ')}" style="--r:${((i * 37) % 13) - 6}deg;--i:${i}">${inner}</li>`;
+  }
+  const over = Math.max(0, cyc + pend.length - 10);
+  return `<ol class="stamps">${li}</ol>` + (over ? `<p class="st-over">и ещё +${over} — на новую карту</p>` : '');
+}
+function drawLoyal(items) {
+  const b = bonus(items), p = b.c.length, now = b.s % 10, after = (b.s + p) % 10;
+  const pend = b.c.slice();
+  if (b.free) { pend.splice(pend.indexOf(b.gifts[0]), 1); pend.splice(9 - now, 0, b.gifts[0]); } // в клетке 🎁 — тот самый бесплатный стакан
+  const html = stampCard(pend);
+  const left = n => n === 9 ? 'следующий кофе — <b>в подарок</b>' : `до подарка ещё <b>${9 - n}</b>`;
+  let t;
+  if (p) t = `Этот заказ: <b>+${p}</b> ${plural(p, 'штамп', 'штампа', 'штампов')}` +
+    (b.free ? ` · 🎁 <b>${b.gifts.map(n => parse(n).base).join(', ')} — бесплатно</b>, −${rub(b.off)}` : ` · потом ${left(after)}`);
+  else if (!b.s) t = 'Каждый кофе, заказанный на сайте, — штамп. Бумажная карта не нужна: она живёт в этом телефоне, бариста сверит по SMS.';
+  else t = (now === 0 && b.s ? 'Карта заполнена, подарок получен 🎉 Новая карта: ' : 'У вас <b>' + now + '</b> из 9 · ') + left(now);
+  $('stampBox').innerHTML = html; $('stampText').innerHTML = t;
+  $('ckStamps').innerHTML = p ? html + `<p>${t}</p>` : '';
+  return b;
+}
+
+function add(label, q = 1) {
+  cart[label] = cart[label] || { price: priceOf(label), qty: 0 };
+  cart[label].qty += q;
+  const b = CARD[parse(label).base];
+  if (b) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+  render();
+}
+document.querySelectorAll('#items button').forEach(b => {
+  b.addEventListener('click', () => CUSTOM[b.dataset.name] ? openCustom(b.dataset.name) : add(b.dataset.name));
+});
+
+// Конструктор: выбор запоминается — в следующий раз ваш капучино уже «на овсяном»
+const PREF = 'zr-pref';
+let cz = null;
+function openCustom(name, preset, quick) {
+  let pref = {}; try { pref = JSON.parse(localStorage.getItem(PREF)) || {}; } catch (e) {}
+  const groups = CUSTOM[name], mine = preset ? groups.map(g => (g[1].find(([k]) => k && preset.includes(k)) || [''])[0]) : pref[name];
+  cz = { name, quick, sel: groups.map((g, i) => mine && g[1].some(([k]) => k === mine[i]) ? mine[i] : ''), pair: new Set() };
+  $('czPair').hidden = !!quick; // из «Окошка» — только сам стакан
+  $('czName').textContent = name;
+  $('czHint').textContent = preset ? 'Подобрали по вкусу — можно поменять' : mine && mine.some(Boolean) ? 'Как вы любите — можно поменять' : 'Соберите под себя';
+  $('czGroups').innerHTML = groups.map(([t, opts], gi) =>
+    `<fieldset><legend>${t}</legend><div class="chips">` + opts.map(([k, lab]) =>
+      `<button type="button" data-g="${gi}" data-k="${k}">${lab}${k && OPT[k].p ? ` <i>+${OPT[k].p}</i>` : ''}</button>`).join('') +
+    `</div></fieldset>`).join('');
+  $('czGroups').querySelectorAll('button').forEach(x => x.onclick = () => { cz.sel[+x.dataset.g] = x.dataset.k; drawCustom(true); });
+  const pair = $('czPair'), food = Object.keys(BAKE);
+  pair.querySelector('.chips').innerHTML = food.map(f =>
+    `<button type="button" data-f="${f}">${art(f, 1)}${f.split(' ')[0]} <i>+${PRICE[f]}</i></button>`).join('');
+  pair.querySelectorAll('button').forEach(x => x.onclick = () => { const f = x.dataset.f; cz.pair.has(f) ? cz.pair.delete(f) : cz.pair.add(f); drawCustom(); });
+  drawCustom(true);
+  $('custom').showModal();
+}
+const czLabel = () => [cz.name, ...cz.sel.filter(Boolean).map(k => OPT[k].t)].join(' · ');
+function drawCustom(redrawCup) {
+  const label = czLabel();
+  if (redrawCup) $('czArt').innerHTML = art(label);
+  $('czGroups').querySelectorAll('button').forEach(x => x.classList.toggle('on', cz.sel[+x.dataset.g] === x.dataset.k));
+  $('czPair').querySelectorAll('button').forEach(x => x.classList.toggle('on', cz.pair.has(x.dataset.f)));
+  const keys = cz.sel.filter(Boolean);
+  $('czSum').innerHTML = keys.length ? keys.map(k => OPT[k].t).join(' · ') : 'классический рецепт';
+  const sum = priceOf(label) + [...cz.pair].reduce((s, f) => s + PRICE[f], 0);
+  $('czAdd').textContent = cz.quick ? `Готово · ${rub(sum)}` : `Добавить в заказ · ${rub(sum)}`;
+}
+$('czAdd').onclick = () => {
+  if (!cz.quick) { add(czLabel()); cz.pair.forEach(f => add(f)); }
+  try { const p = JSON.parse(localStorage.getItem(PREF)) || {}; p[cz.name] = cz.sel; localStorage.setItem(PREF, JSON.stringify(p)); } catch (e) {}
+  $('custom').close();
+  if (cz.name === qk.name) drawQuick(true);
+};
+$('custom').addEventListener('click', e => { if (e.target === $('custom')) $('custom').close(); });
+
+function render() {
+  let count = 0, sum = 0;
+  $('lines').innerHTML = '';
+  for (const [n, it] of Object.entries(cart)) {
+    if (!it.qty) continue;
+    count += it.qty; sum += it.qty * it.price;
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="nm">${art(n, 1)}<span>${nice(n)}</span></span><span class="q"><button type="button" data-d="-1">−</button>${it.qty}<button type="button" data-d="1">+</button></span><span>${rub(it.qty * it.price)}</span>`;
+    li.querySelectorAll('button').forEach(x => x.onclick = () => { it.qty += +x.dataset.d; render(); });
+    $('lines').append(li);
+  }
+  // стаканы коллег из общего заказа
+  (group ? group.guests : []).forEach(g => g.i.forEach(([n, q]) => {
+    const p = priceOf(n); count += q; sum += q * p;
+    const li = document.createElement('li'); li.className = 'from';
+    li.innerHTML = `<span class="nm">${art(n, 1)}<span><b class="who">${esc(g.n)}</b> ${nice(n)}${q > 1 ? ' ×' + q : ''}</span></span><button type="button" class="rm" aria-label="Убрать">×</button><span>${rub(q * p)}</span>`;
+    li.querySelector('.rm').onclick = () => { g.i = g.i.filter(x => x[0] !== n); group.guests = group.guests.filter(x => x.i.length); saveGroup(); render(); };
+    $('lines').append(li);
+  }));
+  // подарки: стакан для друга, он заберёт сам по коду
+  gifts.forEach(g => {
+    const p = priceOf(g.d); count++; sum += p;
+    const li = document.createElement('li'); li.className = 'from gift';
+    li.innerHTML = `<span class="nm">${art(g.d, 1)}<span><b class="who">🎁 ${esc(g.t)}</b> ${nice(g.d)}</span></span><button type="button" class="rm" aria-label="Убрать подарок">×</button><span>${rub(p)}</span>`;
+    li.querySelector('.rm').onclick = () => { gifts = gifts.filter(x => x !== g); saveGifts(); render(); drawTreat(); };
+    $('lines').append(li);
+  });
+  const ppl = group && group.guests.length ? group.guests.length + (cartItems().length ? 1 : 0) : 0;
+  const per = {};
+  for (const [n, it] of Object.entries(cart)) { const bn = parse(n).base; per[bn] = (per[bn] || 0) + it.qty; }
+  document.querySelectorAll('#items button').forEach(b => { b.dataset.qty = per[b.dataset.name] || ''; });
+  // гость копит штампы организатору — свою карту ему не показываем как «скидку»
+  const bn = guest ? (drawLoyal([]), { off: 0, free: 0 }) : drawLoyal(allItems());
+  $('bar').hidden = !count;
+  $('barCount').textContent = count + ' шт.' + (ppl ? ` · 👥 ${ppl}` : '') + (bn.free ? ' · 🎁' : '');
+  $('barSum').innerHTML = bn.off ? `<s>${rub(sum)}</s> ${rub(sum - bn.off)}` : rub(sum);
+  $('barOpen').querySelector('b').textContent = guest ? 'В общий заказ →' : isTmr(slotTimes()[0]) ? '🌙 На утро →' : 'Оформить →';
+  $('total').innerHTML = bn.off ? `<s>${rub(sum)}</s> ${rub(sum - bn.off)}` : rub(sum);
+  if (!count && $('checkout').open) $('checkout').close();
+  updateSend(sum);
+  if (guest) drawGuest();
+  if ($('group').open) drawGroup();
+  if (window.vtDraw) window.vtDraw();
+}
+
+function slotTimes() {
+  const now = new Date(), [o, c] = hours(now);
+  let t = new Date(now); t.setSeconds(0, 0);
+  t.setMinutes(Math.ceil((t.getMinutes() + 10) / 5) * 5);
+  if (t.getHours() < o) t.setHours(o, 0);
+  const opts = [];
+  for (let i = 0; i < 4; i++) {
+    const x = new Date(t.getTime() + [0, 10, 20, 40][i] * 6e4);
+    if (x.toDateString() === now.toDateString() && x.getHours() + x.getMinutes() / 60 < c - 0.25) opts.push(x);
+  }
+  if (opts.length) return opts;
+  // сегодня уже не успеем — не отправляем звонить, а предлагаем утро: заказ с вечера к открытию
+  const m = new Date(now.getTime() + 864e5), [o2] = hours(m);
+  return [10, 20, 30, 60].map(x => { const d = new Date(m); d.setHours(o2, x, 0, 0); return d; });
+}
+const hm = d => d.toTimeString().slice(0, 5);
+const isTmr = d => d.toDateString() !== new Date().toDateString();
+const whenOf = d => (isTmr(d) ? 'завтра ' : '') + 'к ' + hm(d);
+const WD = ['в воскресенье', 'в понедельник', 'во вторник', 'в среду', 'в четверг', 'в пятницу', 'в субботу'];
+
+function buildSlots() {
+  const box = $('slots'); box.innerHTML = '';
+  const opts = slotTimes(), tmr = isTmr(opts[0]);
+  $('slotsHead').innerHTML = tmr ? `Когда заберёте <em>завтра</em>, ${WD[opts[0].getDay()]}?` : 'Когда заберёте?';
+  $('checkout').classList.toggle('night', tmr);
+  opts.forEach((x, i) => {
+    const label = hm(x);
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = 'К ' + label + (i === 0 ? (tmr ? ' · сразу к открытию' : ' · быстрее всего') : '');
+    b.onclick = () => { slot = x; box.querySelectorAll('button').forEach(y => y.classList.toggle('on', y === b)); updateSend(); };
+    box.append(b);
+    if (i === 0) b.click();
+  });
+}
+
+// короткий номер заказа: его называют бариста у стойки
+const newNo = () => 10 + Math.floor(Math.random() * 90);
+let orderNo = newNo();
+const fmt = items => items.map(([n, q]) => { const { base, keys } = parse(n); return `${base}${keys.length ? ' (' + keys.map(k => OPT[k].t).join(', ') + ')' : ''} ×${q}`; }).join(', ');
+const smsHref = (items, when, no, guests = [], note = '') => 'sms:88000000000?&body=' + encodeURIComponent(
+  (!items.length && !guests.length ? `Заказ №${no} в Зёрнышко: только подарок.` : guests.length
+    ? `Заказ №${no} в Зёрнышко на компанию, подпишите стаканы: ${[...(items.length ? [`${group && group.host || 'я'} — ${fmt(items)}`] : []), ...guests.map(g => `${g.n} — ${fmt(g.i)}`)].join('; ')}.`
+    : `Заказ №${no} в Зёрнышко: ${fmt(items)}.`) + ` ${items.length || guests.length ? 'Заберу' : 'Зайду оплатить'} ${when ? whenOf(when) : 'по договорённости'}.` + (when && isTmr(when) ? ' Это заказ с вечера на утро.' : '') + note);
+const cartItems = () => Object.entries(cart).filter(([, i]) => i.qty).map(([n, i]) => [n, i.qty]);
+const allItems = () => { const m = {}; [...cartItems(), ...(group ? group.guests.flatMap(g => g.i) : [])].forEach(([n, q]) => m[n] = (m[n] || 0) + q); return Object.entries(m); };
+
+const one = n => fmt([[n, 1]]).replace(/ ×1$/, '');
+const treatNote = () => gifts.map(g => ` 🎁 Подарок для ${g.t} от ${g.f}: ${one(g.d)}, код ${g.c} — оплачу ${cartItems().length ? 'со своим заказом' : 'при визите'}, ${g.t} заберёт по коду.`).join('');
+function updateSend() { $('send').href = smsHref(cartItems(), slot, orderNo, group ? group.guests : [], giftNote(bonus(allItems())) + treatNote() + eveNote(allItems())); }
+
+// «Как обычно»: запоминаем отправленный заказ на этом устройстве
+const KEY = 'zr-usual';
+function remember(items) {
+  if (!items.length) return;
+  let prev = null; try { prev = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  const sig = JSON.stringify(items);
+  const n = prev && JSON.stringify(prev.items) === sig ? prev.n + 1 : 1;
+  try { localStorage.setItem(KEY, JSON.stringify({ items, n, at: Date.now() })); } catch (e) {}
+}
+function sent() {
+  const items = cartItems(), all = allItems(), note = giftNote(bonus(all)), out = gifts.slice();
+  remember(items);
+  if (slot && all.length) startLive(all, slot, orderNo, note + treatNote());
+  if (out.length) { // подарки ушли в кофейню — теперь открытки можно отправлять друзьям
+    gifts = []; saveGifts();
+    saveGiven(out.concat(readGiven()).slice(0, 6));
+  }
+  const got = addStamps(all, orderNo);
+  if (got) setTimeout(() => toast(`☕ +${got} ${plural(got, 'штамп', 'штампа', 'штампов')} в карте гостя` + (note ? ' · подарок учтён 🎁' : '')), 900);
+  setTimeout(() => { // даём ссылке открыть SMS/звонок, потом убираем корзину и показываем талон
+    for (const k in cart) delete cart[k];
+    group = null; saveGroup();
+    if ($('checkout').open) $('checkout').close();
+    render();
+    if (slot && all.length) { showLive(); scrollTo({ top: 0, behavior: 'smooth' }); }
+    orderNo = newNo();
+    drawTreat();
+    if (out.length) openSendGift(out);
+  }, 500);
+}
+$('send').addEventListener('click', sent);
+$('call').addEventListener('click', sent);
+
+// «Живой талон»: после отправки показываем, к скольки готово и сколько осталось
+const LIVE = 'zr-live', HOLD = 15 * 6e4, BREW = 5 * 6e4, TITLE = document.title;
+let liveTimer = null, topView = 'hero';
+function setTop(v) {
+  document.querySelector('.hero').hidden = v !== 'hero';
+  $('usual').hidden = v !== 'usual';
+  $('live').hidden = v !== 'live';
+  $('guest').hidden = v !== 'guest';
+  $('present').hidden = v !== 'present';
+}
+function startLive(items, when, no, note = '') {
+  try { localStorage.setItem(LIVE, JSON.stringify({ items, when: hm(when), no, note, from: Date.now(), at: +when })); } catch (e) {}
+}
+function readLive() {
+  let o = null; try { o = JSON.parse(localStorage.getItem(LIVE)); } catch (e) {}
+  return o && o.at && Date.now() < o.at + HOLD ? o : null;
+}
+const plural = (n, a, b, c) => n % 10 === 1 && n % 100 !== 11 ? a : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? b : c;
+function showLive() {
+  const o = readLive();
+  if (!o) return;
+  $('liveNo').textContent = 'Заказ №' + o.no + ' · назовите номер бариста';
+  const drink = o.items.map(([n]) => n).find(n => DRINKS[parse(n).base]) || 'Капучино';
+  $('liveCup').innerHTML = art(drink);
+  $('liveLines').innerHTML = o.items.map(([n, q]) => `<li>${art(n, 1)}<span>${nice(n)}${q > 1 ? ' ×' + q : ''}</span></li>`).join('');
+  $('liveResend').href = smsHref(o.items, new Date(o.at), o.no, [], o.note || '');
+  setTop('live');
+  tickLive();
+  clearInterval(liveTimer); liveTimer = setInterval(tickLive, 10e3);
+}
+function hideLive() {
+  clearInterval(liveTimer); document.title = TITLE;
+  try { localStorage.removeItem(LIVE); } catch (e) {}
+  setTop(guest ? 'guest' : topView);
+}
+function tickLive() {
+  const o = readLive();
+  if (!o) return hideLive();
+  const now = Date.now(), left = o.at - now;
+  const p = Math.min(1, Math.max(0, (now - o.from) / Math.max(1, o.at - o.from)));
+  $('liveCup').style.setProperty('--p', (.12 + .88 * p).toFixed(3));
+  const stage = left <= 0 ? 2 : left <= BREW ? 1 : 0;
+  $('liveSteps').querySelectorAll('li').forEach((li, i) => { li.classList.toggle('done', i < stage); li.classList.toggle('now', i === stage); });
+  $('live').classList.toggle('ready', stage === 2);
+  const tmr = isTmr(new Date(o.at));
+  $('live').classList.toggle('moon', tmr && left > 0);
+  if (left > 0) {
+    const m = Math.ceil(left / 6e4);
+    const dur = m < 60 ? `${m} ${plural(m, 'минуту', 'минуты', 'минут')}` : `${Math.floor(m / 60)} ч${m % 60 ? ' ' + m % 60 + ' мин' : ''}`;
+    $('liveTitle').innerHTML = tmr ? `Ждём вас <em>завтра к&nbsp;${o.when}</em>` : `Будет готово <em>к&nbsp;${o.when}</em>`;
+    $('liveLeft').textContent = tmr ? `Бариста сварит его к открытию. А пока — спокойной ночи 🌙`
+      : `Через ${dur}` + (m <= 7 ? ' — пора выходить' : ' — можно не спешить');
+    document.title = tmr ? `🌙 Заказ №${o.no} на утро · к ${o.when}` : `☕ ${m < 60 ? m + ' мин' : dur} · заказ №${o.no}`;
+  } else {
+    const till = new Date(o.at + HOLD).toTimeString().slice(0, 5);
+    $('liveTitle').innerHTML = `Готово — <em>ждём вас!</em>`;
+    $('liveLeft').textContent = `Заказ №${o.no} стоит на стойке до ${till}`;
+    document.title = `☕ Готово · заказ №${o.no}`;
+  }
+}
+$('liveHide').onclick = hideLive;
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('live').hidden) tickLive(); });
+
+function openCheckout() { buildSlots(); render(); $('checkout').showModal(); }
+$('barOpen').onclick = () => guest ? openHand() : openCheckout();
+
+// ——— Заказ на компанию: ссылка в чат → каждый выбирает сам → ссылка обратно → одно SMS ———
+const saveGroup = () => { try { group ? localStorage.setItem(GK, JSON.stringify({ ...group, at: Date.now() })) : localStorage.removeItem(GK); } catch (e) {} };
+const saveGuest = () => { try { guest ? localStorage.setItem(GU, JSON.stringify({ ...guest, at: Date.now() })) : localStorage.removeItem(GU); } catch (e) {} };
+const myName = () => { try { return localStorage.getItem(NM) || ''; } catch (e) { return ''; } };
+const setName = v => { try { localStorage.setItem(NM, v); } catch (e) {} };
+const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const dec = s => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/')))));
+const link = o => location.href.split('#')[0] + '#g=' + enc(o);
+const cleanName = s => String(s || '').replace(/[<>]/g, '').trim().slice(0, 20);
+// из ссылки принимаем только то, что есть в меню, — название пересобираем сами
+const cleanItems = a => (Array.isArray(a) ? a : []).filter(Array.isArray).map(([n, q]) => {
+  const { base, keys } = parse(n); q = Math.min(9, Math.max(0, q | 0));
+  return PRICE[base] && q ? [[base, ...keys.map(k => OPT[k].t)].join(' · '), q] : null;
+}).filter(Boolean).slice(0, 12);
+const firstDrink = items => (items.find(([n]) => DRINKS[parse(n).base]) || items[0] || [])[0];
+
+function toast(t) {
+  const el = $('toast'); el.textContent = t; el.hidden = false;
+  el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
+  clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 4200);
+}
+
+// подстаканник: у каждого свой стакан и имя, пустые гнёзда — «ждём»
+function tray(people, waiting) {
+  const cups = people.map(p => { const d = firstDrink(p.i), more = p.i.reduce((s, [, q]) => s + q, 0) - 1;
+    return `<figure class="${p.me ? 'me' : ''}${d ? '' : ' empty'}">${d ? art(d) : '<span class="q-cup">?</span>'}${more > 0 ? `<em>+${more}</em>` : ''}<figcaption>${esc(p.n)}</figcaption></figure>`; });
+  for (let i = 0; i < waiting; i++) cups.push('<figure class="empty wait"><span class="q-cup">?</span><figcaption>ждём…</figcaption></figure>');
+  return `<div class="tray-in">${cups.join('')}</div>`;
+}
+
+function shareRow(box, payload, onSent) {
+  box.innerHTML = `<button type="button" class="btn wide big" data-s="go">${navigator.share ? 'Отправить в чат' : 'Скопировать ссылку'}</button>` +
+    `<div class="share-alt"><button type="button" data-s="tg">Telegram</button><button type="button" data-s="wa">WhatsApp</button><button type="button" data-s="cp">Копировать</button></div>`;
+  const copy = (b, txt) => (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject())
+    .then(() => { const o = b.textContent; b.textContent = 'Скопировано ✓'; setTimeout(() => b.textContent = o, 1800); }, () => prompt('Скопируйте ссылку:', txt));
+  box.querySelectorAll('button').forEach(b => b.onclick = () => {
+    const p = payload(); if (!p) return;
+    const full = p.text + '\n' + p.url, s = b.dataset.s;
+    if (s === 'go' && navigator.share) return navigator.share({ text: p.text, url: p.url }).then(onSent, () => {});
+    if (s === 'tg') open('https://t.me/share/url?url=' + encodeURIComponent(p.url) + '&text=' + encodeURIComponent(p.text), '_blank', 'noopener');
+    else if (s === 'wa') open('https://wa.me/?text=' + encodeURIComponent(full), '_blank', 'noopener');
+    else copy(b, full);
+    onSent();
+  });
+}
+
+// организатор
+function openGroup() {
+  if (guest) { guest = null; saveGuest(); setTop(topView); }
+  if (!group) { group = { id: Math.random().toString(36).slice(2, 8), host: myName(), guests: [] }; saveGroup(); }
+  if ($('checkout').open) $('checkout').close();
+  $('gHost').value = group.host;
+  drawGroup();
+  if (!$('group').open) $('group').showModal();
+}
+function drawGroup() {
+  const mine = cartItems();
+  $('gTray').innerHTML = tray([{ n: group.host || 'Вы', i: mine, me: 1 }, ...group.guests.map(g => ({ n: g.n, i: g.i }))], group.guests.length ? 1 : 2);
+  $('gPeople').innerHTML = group.guests.length ? group.guests.map((g, k) =>
+    `<li><b class="who">${esc(g.n)}</b><span>${g.i.map(([n, q]) => nice(n).replace('<small>', ' <small>') + (q > 1 ? ' ×' + q : '')).join('<br>')}</span><button type="button" data-k="${k}" aria-label="Убрать">×</button></li>`).join('')
+    : '<li class="nobody">Пока никто не выбрал — ссылки от коллег откроются здесь сами</li>';
+  $('gPeople').querySelectorAll('button').forEach(b => b.onclick = () => { group.guests.splice(+b.dataset.k, 1); saveGroup(); render(); });
+  const all = allItems(), sum = all.reduce((s, [n, q]) => s + priceOf(n) * q, 0) - bonus(all).off;
+  $('gGo').textContent = group.guests.length ? `Оформить на всех · ${rub(sum)}` : mine.length ? 'Оформить без коллег' : 'Сначала выбрать себе ↓';
+  $('gGo').classList.toggle('ghost', !group.guests.length && !!mine.length);
+}
+$('gHost').oninput = e => { group.host = cleanName(e.target.value); setName(group.host); saveGroup(); $('gTray').querySelector('.me figcaption').textContent = group.host || 'Вы'; };
+shareRow($('gShare'), () => ({
+  text: `${group.host ? group.host + ' берёт' : 'Беру'} кофе в «Зёрнышко» на всех ☕ Выбери себе что хочешь — закажу одним заказом:`,
+  url: link({ t: 'j', id: group.id, h: group.host }),
+}), () => {});
+$('gGo').onclick = () => {
+  $('group').close();
+  if (cartItems().length || group.guests.length) return openCheckout();
+  $('menu').scrollIntoView({ behavior: 'smooth' });
+};
+document.querySelectorAll('[data-group]').forEach(b => b.onclick = openGroup);
+$('group').addEventListener('click', e => { if (e.target === $('group')) $('group').close(); });
+
+// гость
+function drawGuest() {
+  $('hHost').textContent = 'Собирает: ' + guest.h;
+  const mine = cartItems();
+  $('gsTray').innerHTML = tray([{ n: myName() || 'вы', i: mine, me: 1 }], 0);
+  if (guest.done) {
+    $('gsTitle').innerHTML = `Готово — <em>ваш стакан в&nbsp;заказе</em>`;
+    $('gsLead').textContent = `Как только ${guest.h} откроет вашу ссылку, напиток появится в общей корзине. Передумали — выберите заново и отправьте ещё раз.`;
+    $('gsGo').textContent = 'Отправить ещё раз'; $('gsGo').href = '#';
+  } else {
+    $('gsTitle').innerHTML = `${esc(guest.h)} берёт кофе на всех.<br>А <em>вам что?</em>`;
+    $('gsLead').textContent = 'Выберите напиток в меню — он попадёт в общий заказ одной ссылкой. Ничего платить и отправлять в кофейню не нужно.';
+    $('gsGo').textContent = mine.length ? 'Отправить в общий заказ →' : 'Выбрать свой ↓';
+    $('gsGo').href = mine.length ? '#' : '#menu';
+  }
+}
+$('gsGo').addEventListener('click', e => { if (cartItems().length) { e.preventDefault(); openHand(); } });
+$('gsLeave').onclick = () => { guest = null; saveGuest(); setTop(topView); render(); };
+function openHand() {
+  $('hLines').innerHTML = cartItems().map(([n, q]) => `<li>${art(n, 1)}<span>${nice(n)}${q > 1 ? ' ×' + q : ''}</span></li>`).join('');
+  $('hName').value = myName();
+  $('hand').showModal();
+}
+$('hName').oninput = e => setName(cleanName(e.target.value));
+shareRow($('hShare'), () => {
+  const n = cleanName($('hName').value);
+  if (!n) { $('hName').focus(); $('hName').classList.remove('nudge'); void $('hName').offsetWidth; $('hName').classList.add('nudge'); return null; }
+  return { text: `Мой кофе: ${fmt(cartItems()).replace(/ ×1\b/g, '')}. Нажми — добавится в общий заказ:`, url: link({ t: 'a', id: guest.id, n, i: cartItems() }) };
+}, () => { guest.done = 1; saveGuest(); drawGuest(); setTimeout(() => $('hand').close(), 700); });
+$('hand').addEventListener('click', e => { if (e.target === $('hand')) $('hand').close(); });
+
+// разбираем пришедшую ссылку
+function onHash() {
+  const m = location.hash.match(/^#g=([\w-]+)/);
+  if (!m) return;
+  let d = null; try { d = dec(m[1]); } catch (e) {}
+  history.replaceState(null, '', location.pathname + location.search);
+  if (!d || !d.id) return;
+  if (d.t === 'j') {
+    if (group && group.id === d.id) return openGroup(); // открыли свою же ссылку
+    guest = { id: String(d.id).slice(0, 12), h: cleanName(d.h) || 'Коллега' }; saveGuest();
+    setTop('guest'); render(); scrollTo({ top: 0 });
+  } else if (d.t === 'a') {
+    const items = cleanItems(d.i), n = cleanName(d.n) || 'Коллега';
+    if (!items.length) return;
+    if (!group) group = { id: String(d.id).slice(0, 12), host: myName(), guests: [] };
+    group.guests = group.guests.filter(g => g.n !== n).concat({ n, i: items });
+    saveGroup(); render();
+    toast(`☕ ${n} в заказе: ${items.map(([l]) => parse(l).base).join(', ')}`);
+    openGroup();
+  }
+}
+addEventListener('hashchange', onHash);
+// ссылка коллеги открылась в другой вкладке — эта вкладка тоже узнает
+addEventListener('storage', e => { if (e.key === GK) { group = ld(GK, 8 * 36e5); render(); } });
+
+// заказ в одно касание (из «как обычно» и «Окошка»): SMS уже открывается по ссылке — запоминаем, ставим штампы, показываем талон
+function fire(items, t, no, note) {
+  remember(items); startLive(items, t, no, note);
+  const got = addStamps(items, no); render();
+  if (got) setTimeout(() => toast(`☕ +${got} ${plural(got, 'штамп', 'штампа', 'штампов')} в карте гостя` + (note ? ' · подарок учтён 🎁' : '')), 900);
+  setTimeout(() => { showLive(); scrollTo({ top: 0, behavior: 'smooth' }); }, 500);
+}
+// пришли по напоминанию из календаря (#r=…): заказ из ссылки, готово через «сколько идти»
+let RIT = null;
+(function () {
+  const m = location.hash.match(/^#r=([\w-]+)/); if (!m) return;
+  try { const d = dec(m[1]), i = cleanItems(d.i); if (i.length) RIT = { i, m: Math.min(60, Math.max(5, d.m | 0)) }; } catch (e) {}
+  history.replaceState(null, '', location.pathname + location.search);
+})();
+(function usual() {
+  let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  if (RIT) saved = { items: RIT.i, n: saved && JSON.stringify(saved.items) === JSON.stringify(RIT.i) ? saved.n : 0 };
+  if (!saved || !saved.items) return;
+  const price = n => PRICE[parse(n).base] ? priceOf(n) : 0;
+  const items = saved.items.filter(([n, q]) => price(n) && q > 0); // позиции, которых больше нет в меню, пропускаем
+  if (!items.length) return;
+
+  const h = new Date().getHours(), hello = h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер';
+  if (RIT) $('usual').querySelector('h1').innerHTML = `${hello}.<br><em>Варим?</em>`;
+  $('usualHi').textContent = RIT ? '⏰ Кофейный будильник' + (saved.n ? ` · ${saved.n + 1}-е утро подряд с нами` : '') : hello +
+    (saved.n > 1 ? ` · вы брали это ${saved.n} ${[2, 3, 4].includes(saved.n % 10) && ![12, 13, 14].includes(saved.n % 100) ? 'раза' : 'раз'}` : ' · с возвращением');
+  let sum = 0;
+  items.forEach(([n, q]) => {
+    sum += price(n) * q;
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="nm">${art(n, 1)}<span>${nice(n)}</span>${q > 1 ? ' <i>×' + q + '</i>' : ''}</span><span>${rub(price(n) * q)}</span>`;
+    $('usualLines').append(li);
+  });
+  const ub = bonus(items), ul = 9 - ub.s % 10;
+  $('usualSum').innerHTML = ub.off ? `<s>${rub(sum)}</s> ${rub(sum - ub.off)}` : rub(sum);
+  if (ub.free) { $('usualStamp').innerHTML = `🎁 <b>${ub.gifts.map(n => parse(n).base).join(', ')} — в подарок</b> по карте гостя`; $('usualStamp').hidden = false; }
+  else if (ub.s) { $('usualStamp').innerHTML = `☕ +${ub.c.length} в карту гостя · до подарка останется ${Math.max(0, ul - ub.c.length)}`; $('usualStamp').hidden = !ub.c.length; }
+
+  let first = slotTimes()[0];
+  if (RIT) { // «выхожу сейчас» — готово к моменту, когда дойдёте
+    const t = new Date(Date.now() + RIT.m * 6e4), [o, c] = hours(t);
+    t.setSeconds(0, 0); t.setMinutes(Math.ceil(t.getMinutes() / 5) * 5);
+    if (t.getHours() < o) t.setHours(o, 0);
+    if (!isTmr(t) && t.getHours() + t.getMinutes() / 60 < c - .25) first = t;
+    $('usual').classList.add('rit');
+  }
+  if (first) {
+    const t = first;
+    $('usualWhen').textContent = 'Будет готово ' + whenOf(t);
+    $('usualSend').textContent = (isTmr(t) ? '🌙 Заказать ' : 'Заказать ') + whenOf(t);
+    const no = newNo(), note = giftNote(ub);
+    $('usualSend').href = smsHref(items, t, no, [], note);
+    $('usualSend').onclick = () => fire(items, t, no, note);
+  } else {
+    $('usualWhen').textContent = 'Сегодня уже не успеем';
+    $('usualSend').textContent = 'Позвонить и договориться на завтра';
+    $('usualSend').href = 'tel:88000000000';
+    $('usualNote').hidden = true;
+  }
+
+  $('usualEdit').onclick = () => {
+    items.forEach(([n, q]) => cart[n] = { price: price(n), qty: q });
+    openCheckout();
+  };
+  topView = 'usual'; setTop('usual');
+})();
+// «Ночная смена»: кофейня закрыта — первый экран засыпает, но утренний кофе можно заказать прямо сейчас
+(function night() {
+  const now = new Date(), [o, c] = hours(now), h = now.getHours() + now.getMinutes() / 60;
+  if (h >= o && h < c) return;
+  const first = slotTimes()[0], tmr = isTmr(first), at = hm(first), opens = hours(first)[0] + ':00';
+  document.body.classList.add('night');
+  $('heroEye').textContent = `Ночная смена · ${tmr ? 'завтра' : 'сегодня'} откроемся в ${opens}`;
+  $('heroH1').innerHTML = tmr ? `Утренний кофе —<br><em>закажите с&nbsp;вечера</em>` : `Первый кофе дня —<br><em>пока мы спим</em>`;
+  $('heroLead').innerHTML = `Соберите заказ сейчас, а ${tmr ? 'утром' : 'в'} <b>${at}</b> он уже будет ждать на стойке. ` +
+    `Никакой утренней очереди — можно поспать лишние 10 минут.`;
+  $('heroBtn').textContent = 'Несколько позиций на утро? Всё меню ↓';
+  $('nightTag').textContent = 'к ' + at;
+  let fav = 'Капучино'; try { fav = (JSON.parse(localStorage.getItem(KEY)).items.map(([n]) => n).find(n => DRINKS[parse(n).base])) || fav; } catch (e) {}
+  $('nightCup').innerHTML = art(fav);
+  $('menu').querySelector('small').textContent = `заказ примем сейчас — сварим ${tmr ? 'утром ' : ''}к ${at}`;
+})();
+// ——— «Окошко»: один стакан с первого экрана. Человечек на дорожке = через сколько вы придёте ———
+const QK = ['Американо', 'Капучино', 'Латте', 'Раф', 'Эспрессо'];
+let qk = { name: 'Капучино', i: 1, no: newNo() };
+try { const u = JSON.parse(localStorage.getItem(KEY)).items.map(([n]) => parse(n).base).find(n => QK.includes(n)); if (u) qk.name = u; } catch (e) {}
+// ваш напиток «как вы любите» — из конструктора
+function qkLabel(name) {
+  let p = null; try { p = (JSON.parse(localStorage.getItem(PREF)) || {})[name]; } catch (e) {}
+  return [name, ...(Array.isArray(p) ? p.filter(k => OPT[k]).map(k => OPT[k].t) : [])].join(' · ');
+}
+function qkTimes() {
+  const now = new Date(), [o, c] = hours(now), t = new Date(now);
+  t.setSeconds(0, 0); t.setMinutes(Math.ceil((t.getMinutes() + 10) / 5) * 5);
+  if (t.getHours() < o) t.setHours(o, 0);
+  const out = [];
+  for (let k = 0; k <= 10; k++) {
+    const x = new Date(t.getTime() + k * 5 * 6e4);
+    if (x.toDateString() === now.toDateString() && x.getHours() + x.getMinutes() / 60 < c - .25) out.push(x);
+  }
+  if (out.length) return out;
+  const m = new Date(now.getTime() + 864e5), [o2] = hours(m); // сегодня не успеем — дорожка ведёт в завтрашнее утро
+  return [10, 20, 30, 40, 50, 60, 75, 90].map(x => { const d = new Date(m); d.setHours(o2, x, 0, 0); return d; });
+}
+function drawQuick(redrawCup) {
+  const ts = qkTimes(), r = $('qkRange');
+  r.max = ts.length - 1; qk.i = Math.min(qk.i, ts.length - 1); r.value = qk.i;
+  const t = ts[qk.i], mins = Math.round((t - Date.now()) / 6e4), tmr = isTmr(t), close = !tmr && mins <= 60;
+  const label = qkLabel(qk.name), items = [[label, 1]], b = bonus(items), price = priceOf(label);
+  $('qkCups').querySelectorAll('button').forEach(x => x.setAttribute('aria-checked', x.dataset.n === qk.name));
+  if (redrawCup) $('qkCup').innerHTML = art(label);
+  $('qkName').textContent = qk.name;
+  $('qkOpts').textContent = parse(label).keys.map(k => OPT[k].t).join(', ') || 'классический';
+  $('qkWhenT').textContent = close ? 'Буду у вас через' : 'Зайду';
+  $('qkWhen').textContent = close ? `${mins} мин` : whenOf(t);
+  r.setAttribute('aria-valuetext', close ? `через ${mins} минут, к ${hm(t)}` : whenOf(t));
+  const p = ts.length > 1 ? qk.i / (ts.length - 1) : 0; // 0 — у двери, 1 — дальше всего
+  $('qkRoad').style.setProperty('--p', p.toFixed(3));
+  $('qkFar').textContent = close ? `через ${Math.round((ts[ts.length - 1] - Date.now()) / 6e4)} мин` : 'позже';
+  const cost = b.free ? `<s>${rub(price)}</s> бесплатно 🎁` : rub(price);
+  $('qkSend').innerHTML = `${tmr ? '🌙 ' : ''}${qk.name} ${whenOf(t)} · ${cost}`;
+  $('qkSend').href = smsHref(items, t, qk.no, [], giftNote(b));
+  $('qkHint').textContent = b.free ? 'этот стакан — подарок по карте гостя' : b.s ? (8 - b.s % 10 ? `+1 штамп · до подарка ещё ${8 - b.s % 10}` : '+1 штамп · следующий — в подарок') : 'один стакан — в два касания';
+  qk.t = t; qk.items = items; qk.note = giftNote(b);
+  if (window.quRedraw) window.quRedraw(redrawCup);
+}
+$('qkCups').innerHTML = QK.map(n => `<button type="button" role="radio" data-n="${n}">${art(n, 1)}<span>${n}</span><i>${rub(PRICE[n])}</i></button>`).join('');
+$('qkCups').querySelectorAll('button').forEach(x => x.onclick = () => { if (qk.name === x.dataset.n) return; qk.name = x.dataset.n; drawQuick(true); });
+$('qkRange').oninput = e => { qk.i = +e.target.value; $('qk').classList.add('used'); drawQuick(); };
+$('qkTune').onclick = () => openCustom(qk.name, null, 1);
+$('qkSend').addEventListener('click', () => { fire(qk.items, qk.t, qk.no, qk.note); qk.no = newNo(); setTimeout(() => drawQuick(), 600); });
+drawQuick(true);
+setInterval(() => { if (!document.hidden) drawQuick(); }, 30e3); // время на дорожке не стоит на месте
+
+// ——— «Сколько мне идти?»: путь до кофейни по геопозиции — человечек на дорожке встаёт сам; в талоне — «успеваете?» ———
+const CAFE = { lat: 55.7612, lon: 37.6247 }, GWK = 'zr-walk';
+const GO = { // как добираетесь: метров в минуту по городу, + минуты на подачу
+  walk: { i: '🚶', t: 'пешком', v: 75, add: 0 },
+  kick: { i: '🛴', t: 'самокат', v: 190, add: 1 },
+  car: { i: '🚕', t: 'такси', v: 330, add: 6 },
+};
+const NEAR = [['🏢', 'работаю рядом', 4], ['🚌', 'от остановки', 6], ['🚇', 'от метро', 9], ['🏠', 'живу в районе', 14]];
+let gw = null; try { gw = JSON.parse(localStorage.getItem(GWK)); if (!gw || Date.now() - gw.at > 30 * 864e5) gw = null; } catch (e) {}
+function geoDist(a, b) { // метры по прямой × 1.3 — улицы не идут по прямой
+  const R = 6371e3, r = Math.PI / 180, dl = (b.lat - a.lat) * r, dn = (b.lon - a.lon) * r;
+  const h = Math.sin(dl / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dn / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h)) * 1.3;
+}
+const tripMin = (d, mode) => Math.max(1, Math.round(d / GO[mode].v + GO[mode].add + 2)); // +2 — двор и лестница
+const kmOf = d => d < 950 ? `${Math.round(d / 10) * 10} м` : `${(d / 1000).toFixed(d < 9950 ? 1 : 0).replace('.', ',')} км`;
+const durOf = m => m < 60 ? `${m} мин` : `${Math.floor(m / 60)} ч${m % 60 ? ' ' + m % 60 + ' мин' : ''}`;
+function gwSave() { try { localStorage.setItem(GWK, JSON.stringify(gw)); } catch (e) {} }
+function gwApply(m) { // ставим человечка на первый слот, к которому вы успеваете дойти
+  const ts = qkTimes(), now = Date.now();
+  let i = ts.findIndex(t => (t - now) / 6e4 >= m);
+  if (i < 0) i = ts.length - 1;
+  qk.i = i; $('qk').classList.add('used'); drawQuick();
+}
+function gwMap(u) { // рисованная мини-карта: кварталы, вы, «Зёрнышко» и путь по улицам
+  const W = 320, H = 124;
+  let dx = (u.lon - CAFE.lon) * Math.cos(CAFE.lat * Math.PI / 180), dy = -(u.lat - CAFE.lat);
+  const n = Math.hypot(dx, dy) || 1; dx /= n; dy /= n;
+  const L = Math.min(240, 90 + 46 * Math.log10(1 + u.d / 150));
+  const cl = (v, a, b) => Math.max(a, Math.min(b, v));
+  const ux = cl(160 + dx * L / 2, 22, W - 22), uy = cl(62 + dy * L / 3.2, 22, H - 22);
+  const cx = cl(160 - dx * L / 2, 26, W - 26), cy = cl(62 - dy * L / 3.2, 26, H - 22);
+  let blocks = '';
+  for (let x = -8; x < W; x += 46) for (let j = 0, y = -10; y < H; j++, y += 38) blocks += `<rect x="${x + (j % 2 ? 9 : -9)}" y="${y}" width="36" height="28" rx="3"/>`;
+  const sx = Math.sign(cx - ux) || 1, sy = Math.sign(cy - uy) || 1, rr = Math.min(10, Math.abs(cx - ux) / 2, Math.abs(cy - uy) / 2);
+  const path = `M${ux.toFixed(1)} ${uy.toFixed(1)}H${(cx - sx * rr).toFixed(1)}Q${cx.toFixed(1)} ${uy.toFixed(1)} ${cx.toFixed(1)} ${(uy + sy * rr).toFixed(1)}V${cy.toFixed(1)}`;
+  const lx = (ux + cx) / 2, ly = uy + (uy > 30 ? -9 : 17);
+  $('gwMap').innerHTML = `<rect width="${W}" height="${H}" rx="12" fill="#f3e7d8"/>
+    <g fill="#e8d6bf">${blocks}</g>
+    <path d="M-10 ${H * .78}Q${W * .4} ${H * .62} ${W + 10} ${H * .9}" stroke="#cfe0e6" stroke-width="9" fill="none" opacity=".8"/>
+    <path class="gw-path" d="${path}" fill="none" stroke="#d9822b" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="1 7"/>
+    <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#6b3e26" font-family="system-ui" paint-order="stroke" stroke="#f3e7d8" stroke-width="4">${kmOf(u.d)}</text>
+    <g class="gw-you" transform="translate(${ux.toFixed(1)} ${uy.toFixed(1)})"><circle r="11" fill="#d9822b" opacity=".25" class="gw-ping"/><circle r="6" fill="#d9822b" stroke="#2a1d15" stroke-width="2"/>
+      <rect x="-14" y="${uy > 40 ? -27 : 10}" width="28" height="15" rx="7.5" fill="#2a1d15"/><text y="${uy > 40 ? -16 : 21}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="system-ui">вы</text></g>
+    <g transform="translate(${cx.toFixed(1)} ${cy.toFixed(1)})"><path d="M0 0C-4-6-12-11-12-19a12 12 0 0 1 24 0C12-11 4-6 0 0Z" fill="#6b3e26" stroke="#2a1d15" stroke-width="2"/>
+      <text y="-15" text-anchor="middle" font-size="11">☕</text></g>`;
+}
+function gwDraw() {
+  const box = $('gw');
+  box.classList.toggle('set', !!gw);
+  $('gwAsk').hidden = !!gw;
+  $('gwOut').hidden = !(gw && gw.src === 'geo');
+  $('gwNear').hidden = !(gw ? gw.src === 'near' : box.classList.contains('ask'));
+  if (gw && gw.src === 'geo') {
+    const m = tripMin(gw.d, gw.mode);
+    gwMap(gw);
+    $('gwKm').textContent = `${GO[gw.mode].i} ~${durOf(m)} ${GO[gw.mode].t}`;
+    const ts = qkTimes(), last = Math.round((ts[ts.length - 1] - Date.now()) / 6e4);
+    $('gwSay').textContent = gw.d > 30e3 ? '— вы далековато от Примерной. Выберите время на дорожке сами.'
+      : m > last && gw.mode === 'walk' ? '— пешком далековато. Может, на самокате или такси?'
+      : `— ${kmOf(gw.d)} до двери. Человечек уже на дорожке, стакан будет к вашему приходу.`;
+    $('gwMode').innerHTML = Object.entries(GO).map(([k, g]) => `<button type="button" role="radio" data-k="${k}" aria-checked="${k === gw.mode}">${g.i} ${tripMin(gw.d, k)} мин</button>`).join('');
+    $('gwMode').querySelectorAll('button').forEach(b => b.onclick = () => { gw.mode = b.dataset.k; gw.m = tripMin(gw.d, gw.mode); gwSave(); gwDraw(); if (gw.d <= 30e3) gwApply(gw.m); });
+  }
+  $('gwNearT').textContent = gw && gw.src === 'near' ? `«${gw.l}» — ставим ~${gw.m} мин. Откуда вы обычно идёте?` : 'Не вышло определить место — откуда идёте?';
+  $('gwChips').innerHTML = NEAR.map(([i, t, m]) => `<button type="button" data-m="${m}" data-t="${t}" aria-pressed="${!!gw && gw.l === t}">${i} ${t}<i>~${m} мин</i></button>`).join('')
+    + `<button type="button" data-geo>📍 по геопозиции</button>`;
+  $('gwChips').querySelectorAll('button').forEach(b => b.onclick = () => {
+    if (b.hasAttribute('data-geo')) return gwLocate();
+    gw = { src: 'near', m: +b.dataset.m, l: b.dataset.t, at: Date.now() }; gwSave(); gwDraw(); gwApply(gw.m);
+  });
+}
+function gwLocate() {
+  const box = $('gw');
+  if (!navigator.geolocation) { box.classList.add('ask'); gw = null; return gwDraw(); }
+  $('gwAsk').classList.add('busy'); $('gwAsk').querySelector('b').textContent = 'Ищем вас на карте…';
+  navigator.geolocation.getCurrentPosition(p => {
+    const u = { lat: p.coords.latitude, lon: p.coords.longitude };
+    const d = geoDist(u, CAFE), mode = d > 3500 ? 'car' : d > 1800 ? 'kick' : 'walk';
+    gw = { src: 'geo', ...u, d, mode, m: tripMin(d, mode), at: Date.now() };
+    gwSave(); $('gwAsk').classList.remove('busy'); gwDraw();
+    if (d <= 30e3) { gwApply(gw.m); toast(`📍 Вам ~${durOf(gw.m)} ${GO[mode].t} — человечек на месте`); }
+  }, () => {
+    $('gwAsk').classList.remove('busy'); $('gwAsk').querySelector('b').textContent = 'Не знаете, сколько идти?';
+    box.classList.add('ask'); gw = null; gwDraw();
+  }, { enableHighAccuracy: false, timeout: 9000, maximumAge: 120e3 });
+}
+$('gwAsk').onclick = gwLocate;
+$('gwRedo').onclick = () => { gw = null; try { localStorage.removeItem(GWK); } catch (e) {} gwDraw(); gwLocate(); };
+gwDraw();
+if (gw && (gw.src === 'near' || gw.d <= 30e3)) gwApply(gw.m); // вернулись — человечек сразу там, где вам обычно
+
+// в живом талоне: где вы сейчас и успеваете ли к своему стакану
+let geoWatch = null;
+function liveGeo(p) {
+  const o = readLive(); if (!o) return;
+  const u = { lat: p.coords.latitude, lon: p.coords.longitude }, d = geoDist(u, CAFE);
+  const mode = gw && gw.src === 'geo' ? gw.mode : d > 3500 ? 'car' : 'walk', m = tripMin(d, mode);
+  const left = Math.round((o.at - Date.now()) / 6e4), late = m - left, till = new Date(o.at + HOLD).toTimeString().slice(0, 5);
+  const out = $('liveGeo'); out.className = 'live-geo';
+  if (d < 150) { out.innerHTML = '📍 <b>Вы почти у нас</b> — во двор, 2 этаж, дверь направо'; out.classList.add('ok'); }
+  else if (late <= 0 && left - m > 3) out.innerHTML = `📍 Вы в ${kmOf(d)} · ~${m} мин ${GO[mode].t}. <b>Выходите в ${new Date(o.at - m * 6e4).toTimeString().slice(0, 5)}</b> — придёте к готовому`;
+  else if (late <= 2) { out.innerHTML = `📍 Вы в ${kmOf(d)} · ~${m} мин. <b>Пора выходить</b> — как раз успеете`; out.classList.add('go'); }
+  else if (late <= 15) { out.innerHTML = `📍 Вы в ${kmOf(d)} · опоздаете на ~${late} мин — <b>ничего, стакан ждёт до ${till}</b>`; out.classList.add('go'); }
+  else { out.innerHTML = `📍 Вы в ${kmOf(d)} · ~${durOf(m)} — <b>не успеваете</b>. <a href="tel:88000000000">Позвоните</a>, перенесём`; out.classList.add('late'); }
+}
+function liveGeoStart() {
+  if (!navigator.geolocation || geoWatch !== null) return;
+  geoWatch = navigator.geolocation.watchPosition(liveGeo, e => { if (e.code === 1) { $('liveGeo').hidden = true; liveGeoStop(); } }, { maximumAge: 30e3, timeout: 15e3 });
+}
+const LG_ASK = $('liveGeo').innerHTML;
+function liveGeoStop() { // талон скрыт — перестаём следить, в следующий раз снова предложим проверить
+  if (geoWatch !== null) navigator.geolocation.clearWatch(geoWatch);
+  geoWatch = null; $('liveGeo').className = 'live-geo'; $('liveGeo').innerHTML = LG_ASK;
+}
+$('liveGeo').addEventListener('click', e => { if (e.target.id !== 'liveGeoAsk') return; $('liveGeo').innerHTML = '📍 Ищем вас на карте…'; liveGeoStart(); });
+function liveGeoSync() { // талон на экране — следим за дорогой (сами — только если вы уже разрешили геопозицию)
+  const o = readLive(), on = !$('live').hidden && !!o && !isTmr(new Date(o.at));
+  $('liveGeo').hidden = !on || !navigator.geolocation;
+  if (on && gw && gw.src === 'geo') liveGeoStart(); else if (!on) liveGeoStop();
+}
+new MutationObserver(liveGeoSync).observe($('live'), { attributes: true, attributeFilter: ['hidden'] });
+liveGeoSync();
+// ——— «Очередь — мимо вас»: сколько людей обычно у стойки в выбранные полчаса — и вы, идущий мимо них к полке «С сайта» ———
+(function queue() {
+  // обычная загрузка по получасам от открытия (0…1): будни — утренний пик и обед; выходные — поздний завтрак
+  const WK = [.7, 1, .9, .6, .35, .3, .3, .35, .5, .7, .8, .6, .35, .25, .25, .3, .35, .4, .45, .55, .6, .5, .35, .25, .2, .12];
+  const WE = [.3, .5, .75, .9, 1, .85, .7, .55, .45, .4, .45, .5, .5, .45, .4, .35, .3, .25, .18, .1];
+  const MAX = 10, PER = 1.4; // до 10 человек; ~1,4 минуты на гостя у кассы
+  const COATS = ['#a9c28a', '#8fb3c9', '#c9b49c', '#e9c46a', '#b5838d', '#d6e4ea', '#9aa38a', '#c7a0c0', '#7f9c8a', '#e0caae'];
+  const HAIR = ['#3b2214', '#6b3e26', '#2a1d15', '#c08045', '#7a6656'];
+  const ppl = $('quPeople');
+  ppl.innerHTML = Array.from({ length: MAX }, (_, i) => {
+    const x = 398 - i * 34, h = [0, 8, 3, 11, 5, 9, 2, 7, 4, 10][i], c = COATS[i], hr = HAIR[i % 5], top = 124 + h;
+    const phone = i % 3 === 1 ? `<rect x="6" y="${top - 8}" width="7" height="11" rx="1.5" fill="#2a1d15"/>` : '';
+    const cross = i % 4 === 2 ? `<path d="M-10 ${top + 22}h20" stroke="#2a1d15" stroke-width="5" stroke-linecap="round"/>` : '';
+    return `<g transform="translate(${x} 0)"><g class="pp" style="--d:${i * 45}ms">` +
+      `<path d="M-5 200L-4 ${top + 44}M5 200L4 ${top + 44}" stroke="#2a1d15" stroke-width="5" stroke-linecap="round"/>` +
+      `<rect x="-12" y="${top}" width="24" height="${200 - top - 22}" rx="10" fill="${c}" stroke="#2a1d15" stroke-width="2"/>` + cross +
+      `<circle cx="0" cy="${top - 13}" r="10.5" fill="#f1c9a5" stroke="#2a1d15" stroke-width="2"/>` +
+      `<path d="M-10.5 ${top - 16}q10.5-13 21 0" fill="${hr}"/>` + phone + `</g></g>`;
+  }).join('');
+  const pp = [...ppl.querySelectorAll('.pp')];
+  const place = (svg, x, y, w) => svg.replace('<svg ', `<svg x="${x}" y="${y}" width="${w}" height="${w}" `);
+  let day = null, blocks = [], sel = 0, shown = -1, cupFor = '';
+
+  function build() {
+    const first = slotTimes()[0], [o, c] = hours(first), w = first.getDay(), prof = (w === 0 || w === 6) ? WE : WK;
+    const fh = first.getHours() + first.getMinutes() / 60, today = !isTmr(first);
+    day = first; blocks = [];
+    for (let h = o, k = 0; h < c - .25; h += .5, k++) {
+      const t = new Date(first); t.setHours(Math.floor(h), (h % 1) * 60 + 15, 0, 0);
+      const open = h + .5 > fh;
+      if (open && t < first) t.setTime(first.getTime());
+      blocks.push({ h, t, open, n: Math.round((prof[k] ?? .2) * 9), here: today && fh >= h && fh < h + .5 });
+    }
+    sel = Math.max(0, blocks.findIndex(b => b.open));
+    $('quDay').textContent = today ? 'Сегодня' : 'Завтра, ' + WD[first.getDay()].replace(/^во? /, '');
+    const bars = $('quBars');
+    bars.innerHTML = blocks.map((b, i) => {
+      const lb = b.h % 2 === 0 ? `<span>${b.h}:00</span>` : '';
+      const tt = `${hm(b.t)} — ${b.n ? 'обычно ~' + b.n + ' ' + plural(b.n, 'человек', 'человека', 'человек') : 'обычно без очереди'}`;
+      return `<button type="button" role="radio" style="--h:${Math.max(b.n, .4) / 9}" ${b.open ? '' : 'disabled'} class="${b.here ? 'here' : ''}" aria-label="${tt}" title="${b.open ? tt : 'уже прошло'}">${lb}</button>`;
+    }).join('');
+    [...bars.children].forEach((x, i) => {
+      x.onclick = () => { sel = i; draw(sel); };
+      x.onmouseenter = () => { if (blocks[i].open) draw(i, true); };
+      x.onmouseleave = () => draw(sel);
+      x.onkeydown = e => {
+        const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+        if (!d) return; e.preventDefault();
+        let j = i + d; while (blocks[j] && !blocks[j].open) j += d;
+        if (blocks[j]) { sel = j; draw(sel); bars.children[j].focus(); }
+      };
+    });
+  }
+
+  function draw(i, peek) {
+    const b = blocks[i]; if (!b) return;
+    [...$('quBars').children].forEach((x, k) => { x.classList.toggle('on', k === i); x.setAttribute('aria-checked', k === sel); x.tabIndex = k === sel ? 0 : -1; });
+    if (shown !== b.n) { pp.forEach((g, k) => g.classList.toggle('off', k >= b.n)); shown = b.n; }
+    const label = qkLabel(qk.name), items = [[label, 1]], bn = bonus(items), wait = Math.max(2, Math.round(b.n * PER));
+    if (cupFor !== label) { cupFor = label; $('quCup').innerHTML = place(art(label, 1), 661, 98, 44); $('quHand').innerHTML = place(art(label, 1), 6, 146, 28); }
+    $('quSlip').textContent = 'к ' + hm(b.t);
+    const when = (isTmr(b.t) ? 'Завтра в ' : 'В ') + hm(b.t);
+    $('quSay').innerHTML = b.n
+      ? `${when} у стойки обычно <b>${b.n} ${plural(b.n, 'человек', 'человека', 'человек')}</b> — это около ${wait} минут. А ваш стакан уже стоит на полке «С&nbsp;сайта»: взяли и пошли.`
+      : `${when} обычно тихо — но и так стакан будет ждать вас готовым, ровно к ${hm(b.t)}.`;
+    $('quWait').textContent = b.n ? `~${wait} мин` : '—';
+    $('qu').classList.toggle('calm', b.n < 3);
+    if (peek) return;
+    const cost = bn.free ? 'бесплатно 🎁' : rub(priceOf(label));
+    $('quGo').innerHTML = `${b.n >= 3 ? 'Мимо очереди' : 'Без ожидания'}: ${qk.name.toLowerCase()} ${whenOf(b.t)} · ${cost}`;
+    $('quGo').href = smsHref(items, b.t, qk.no, [], giftNote(bn));
+    $('quGo').dataset.i = i;
+  }
+
+  $('quGo').addEventListener('click', () => {
+    const b = blocks[+$('quGo').dataset.i]; if (!b) return;
+    const label = qkLabel(qk.name);
+    fire([[label, 1]], b.t, qk.no, giftNote(bonus([[label, 1]]))); qk.no = newNo();
+    setTimeout(() => drawQuick(), 600);
+  });
+  $('quQk').onclick = e => { e.preventDefault(); $('qk').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+
+  // шапка: «открыто» + сколько людей у стойки обычно прямо сейчас
+  build(); draw(sel);
+  const cur = blocks.find(b => b.here), st = $('status');
+  if (cur && st.classList.contains('open') && cur.n >= 3) {
+    st.innerHTML = `${st.textContent} · <a href="#qu">у стойки ~${cur.n} ${plural(cur.n, 'человек', 'человека', 'человек')}</a>`;
+  }
+  window.quRedraw = () => draw(sel);
+  setInterval(() => { if (document.hidden) return; const was = blocks[sel] && blocks[sel].h; build(); const j = blocks.findIndex(b => b.h === was && b.open); if (j >= 0) sel = j; draw(sel); }, 60e3);
+  // сцена оживает, когда её видно
+  const q = $('qu');
+  if (!('IntersectionObserver' in window)) q.classList.add('go');
+  else { const io = new IntersectionObserver(es => es.forEach(e => q.classList.toggle('go', e.isIntersecting)), { threshold: .25 }); io.observe(q); }
+})();
+// ——— Вкусовой компас: x — крепость (0 мягко … 1 крепко), y — сладость (0 нет … 1 сладко) ———
+const TASTE = [
+  [.95, .06, 'Эспрессо', 'Для тех, кто любит вкус самого кофе', 'Маленький, плотный, бодрит за два глотка. Ничего лишнего.', 1],
+  [.97, .55, 'Эспрессо · ваниль', 'Крепко, но с улыбкой', 'Глоток эспрессо, а в конце — мягкая ванильная сладость.', .95],
+  [.78, .1, 'Американо', 'Чёрный кофе — надолго', 'Как эспрессо, только разбавлен горячей водой: пьётся долго, без молока и сахара.', .9],
+  [.74, .72, 'Американо · карамель', 'Чёрный, но сладкий', 'Классический чёрный кофе с капелькой карамели — горечь уходит.', .85],
+  [.64, .22, 'Капучино · + шот', 'Капучино для тех, кому мало', 'Та же пенка, но с лишней порцией эспрессо — кофе слышно сильнее.', .65],
+  [.5, .08, 'Капучино', 'Золотая середина', 'Поровну кофе, молока и пены. Самый популярный стакан у нас.', .5],
+  [.48, .62, 'Капучино · ваниль', 'Мягко и немного сладко', 'Капучино с ванильным сиропом — как десерт, но всё ещё кофе.', .45],
+  [.3, .32, 'Латте · на овсяном', 'Мягко и с ореховой ноткой', 'Много овсяного молока — само по себе чуть сладкое, без сиропа.', .25],
+  [.24, .06, 'Латте', 'Кофе с молоком из детства', 'Большой, нежный, кофе едва чувствуется. Хорошо для первого раза.', .2],
+  [.22, .82, 'Латте · карамель', 'Сладкий и уютный', 'Много молока и карамель — когда хочется побаловать себя.', .2],
+  [.07, .58, 'Раф', 'Как подтаявшее мороженое', 'Кофе, взбитый со сливками и ванильным сахаром. Почти без горечи.', .08],
+  [.06, .95, 'Раф · лесной орех', 'Самый сладкий стакан', 'Сливочный раф с ореховым сиропом — десерт в стакане.', .06],
+];
+(function compass() {
+  const pad = $('tcPad'), bean = $('tcBean');
+  let cur = null, pos = { x: .5, y: .2 }, moved = false;
+  // начинаем с «вашего» напитка, если вы уже заказывали
+  try { const u = JSON.parse(localStorage.getItem(KEY)).items.map(([n]) => n).find(n => TASTE.some(t => t[2] === n)); if (u) { const t = TASTE.find(t => t[2] === u); pos = { x: t[0], y: t[1] }; } } catch (e) {}
+  $('tcDots').innerHTML = TASTE.map(([x, y, n], i) =>
+    `<button type="button" class="tc-dot" data-i="${i}" style="left:${x * 100}%;bottom:${y * 100}%" aria-label="${n.replace(' · ', ', ')}">${art(n, 1)}</button>`).join('');
+  function pick(i, redraw) {
+    if (i === cur && !redraw) return;
+    cur = i; const [, , label, mood, say, coffee] = TASTE[i];
+    $('tcCup').innerHTML = art(label);
+    $('tcMood').textContent = mood;
+    $('tcName').innerHTML = nice(label);
+    $('tcSay').textContent = say;
+    $('tcMk').style.setProperty('--k', coffee);
+    $('tcTake').textContent = `Беру · ${rub(priceOf(label))}`;
+    pad.setAttribute('aria-valuetext', `${parse(label).base}: ${mood}`);
+    pad.querySelectorAll('.tc-dot').forEach((d, k) => d.classList.toggle('on', k === i));
+  }
+  function place(x, y, snap) {
+    pos = { x: Math.min(1, Math.max(0, x)), y: Math.min(1, Math.max(0, y)) };
+    let best = 0, bd = 9;
+    TASTE.forEach(([tx, ty], i) => { const d = (tx - pos.x) ** 2 + ((ty - pos.y) * .8) ** 2; if (d < bd) { bd = d; best = i; } });
+    if (snap) pos = { x: TASTE[best][0], y: TASTE[best][1] };
+    bean.style.left = pos.x * 100 + '%'; bean.style.bottom = pos.y * 100 + '%';
+    pick(best);
+  }
+  const fromEvt = e => { const r = $('tcField').getBoundingClientRect(); return [(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height]; };
+  let drag = false;
+  pad.addEventListener('pointerdown', e => {
+    if (e.target.closest('.tc-dot')) return;
+    drag = true; pad.setPointerCapture(e.pointerId); pad.classList.add('drag');
+    if (!moved) { moved = true; pad.classList.add('used'); }
+    place(...fromEvt(e));
+  });
+  pad.addEventListener('pointermove', e => { if (drag) place(...fromEvt(e)); });
+  const up = () => { if (!drag) return; drag = false; pad.classList.remove('drag'); place(pos.x, pos.y, true); };
+  pad.addEventListener('pointerup', up); pad.addEventListener('pointercancel', up);
+  pad.querySelectorAll('.tc-dot').forEach(d => d.onclick = () => { moved = true; pad.classList.add('used'); const t = TASTE[+d.dataset.i]; place(t[0], t[1], true); });
+  pad.addEventListener('keydown', e => {
+    const s = .08, k = { ArrowLeft: [-s, 0], ArrowRight: [s, 0], ArrowUp: [0, s], ArrowDown: [0, -s] }[e.key];
+    if (!k) return; e.preventDefault(); moved = true; pad.classList.add('used'); place(pos.x + k[0], pos.y + k[1]);
+  });
+  $('tcTake').onclick = () => {
+    const label = TASTE[cur][2]; add(label);
+    toast(`☕ ${parse(label).base} в заказе — ${TASTE[cur][3].toLowerCase()}`);
+  };
+  $('tcTune').onclick = () => { const { base, keys } = parse(TASTE[cur][2]); openCustom(base, keys); };
+  place(pos.x, pos.y, true);
+})();
+// ——— Кофейный будильник: повторяющееся событие в календаре телефона со ссылкой-заказом ———
+(function ritual() {
+  const RK = 'zr-ritual', DN = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'], BY = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+  const ORDER = [1, 2, 3, 4, 5, 6, 0], WALK = [5, 10, 15, 20, 30];
+  let rt = { n: qk.name, d: [1, 2, 3, 4, 5], at: 8 * 60 + 20, w: 15 };
+  try { const s = JSON.parse(localStorage.getItem(RK)); if (s && QK.includes(s.n) && Array.isArray(s.d)) rt = { n: s.n, d: s.d.filter(i => i >= 0 && i < 7), at: Math.min(1200, Math.max(420, s.at | 0)), w: WALK.includes(s.w) ? s.w : 15 }; } catch (e) {}
+  const save = () => { try { localStorage.setItem(RK, JSON.stringify({ n: rt.n, d: rt.d, at: rt.at, w: rt.w })); } catch (e) {} };
+  const p2 = n => String(n).padStart(2, '0'), clk = m => p2(Math.floor(m / 60)) + ':' + p2(m % 60);
+  const label = () => qkLabel(rt.n);
+  const ready = () => rt.at + Math.ceil(rt.w / 5) * 5;
+  const deep = () => location.href.split('#')[0] + '#r=' + enc({ i: [[label(), 1]], m: rt.w });
+  // ближайшее утро из выбранных дней, когда напоминание ещё впереди
+  function next() {
+    const d = new Date(); d.setSeconds(0, 0);
+    for (let k = 0; k < 8; k++) {
+      const x = new Date(d); x.setDate(d.getDate() + k); x.setHours(Math.floor(rt.at / 60), rt.at % 60);
+      if (rt.d.includes(x.getDay()) && x > d) return x;
+    }
+    return d;
+  }
+  const daysText = () => {
+    const s = [...rt.d].sort().join('');
+    return s === '12345' ? 'будни' : s === '0123456' ? 'каждый день' : s === '06' ? 'выходные' : ORDER.filter(i => rt.d.includes(i)).map(i => DN[i].toLowerCase()).join(', ') || 'не выбраны';
+  };
+  $('rtCups').innerHTML = QK.map(n => `<button type="button" role="radio" data-n="${n}">${art(n, 1)}<span>${n}</span><i>${rub(PRICE[n])}</i></button>`).join('');
+  $('rtCups').querySelectorAll('button').forEach(b => b.onclick = () => { if (rt.n === b.dataset.n) return; rt.n = b.dataset.n; draw('all'); });
+  $('rtWalk').innerHTML = WALK.map(w => `<button type="button" role="radio" data-w="${w}">${w} мин</button>`).join('');
+  $('rtWalk').querySelectorAll('button').forEach(b => b.onclick = () => { rt.w = +b.dataset.w; draw(); });
+  $('rtMinus').onclick = () => { rt.at = Math.max(7 * 60, rt.at - 5); draw(); };
+  $('rtPlus').onclick = () => { rt.at = Math.min(20 * 60, rt.at + 5); draw(); };
+
+  function draw(fresh) {
+    const lab = label(), r = ready(), nx = next(), on = rt.d.length > 0;
+    $('rtCups').querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', b.dataset.n === rt.n));
+    $('rtWalk').querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', +b.dataset.w === rt.w));
+    // неделя: в выбранные дни на полке стоит ваш стакан
+    $('rtDays').innerHTML = ORDER.map(i => `<button type="button" data-d="${i}" aria-pressed="${rt.d.includes(i)}" class="${[(i === 0 || i === 6) && 'we', (fresh === i || fresh === 'all') && 'new'].filter(Boolean).join(' ')}">` +
+      `<span class="rt-cupslot">${rt.d.includes(i) ? art(lab, 1) : ''}</span><b>${DN[i]}</b></button>`).join('');
+    $('rtDays').querySelectorAll('button').forEach(b => b.onclick = () => {
+      const i = +b.dataset.d; rt.d = rt.d.includes(i) ? rt.d.filter(x => x !== i) : rt.d.concat(i); draw(i);
+    });
+    $('rtDaysT').textContent = '· ' + daysText();
+    $('rtAt').textContent = clk(rt.at);
+    $('rtClock').textContent = clk(rt.at);
+    $('rtDate').textContent = nx.toLocaleDateString('ru', { weekday: 'long', day: 'numeric', month: 'long' });
+    $('rtTitle').textContent = `${parse(lab).base} — к ${clk(r)}`;
+    $('rtBody').textContent = (parse(lab).keys.length ? parse(lab).keys.map(k => OPT[k].t).join(', ') + '. ' : '') + 'Нажмите — заказ уже собран, останется «Отправить»';
+    $('rtPhone').href = deep();
+    // в выходные мы открываемся в 10 — честно предупреждаем
+    const hrs = i => i === 0 || i === 6 ? [10, 20] : [8, 21];
+    const early = rt.d.filter(i => r < hrs(i)[0] * 60), late = rt.d.some(i => r > hrs(i)[1] * 60 - 15);
+    $('rtWarn').hidden = !(early.length || late || !on);
+    $('rtWarn').textContent = !on ? 'Выберите хотя бы один день' : late ? 'К этому времени мы уже закрываемся — сдвиньте напоминание пораньше'
+      : `${early.some(i => i === 0 || i === 6) ? 'В выходные открываемся в 10:00' : 'Открываемся в 8:00'} — в эти дни сварим к открытию`;
+    $('rtAdd').disabled = !on;
+    $('rtAdd').textContent = on ? `⏰ Поставить: ${daysText()} в ${clk(rt.at)}` : 'Выберите дни';
+    const per = rt.d.length, wk = per ? Math.ceil(10 / per) : 0;
+    $('rtPerk').innerHTML = per ? `☕ ${per} ${plural(per, 'утро', 'утра', 'утр')} в неделю — это <b>+${per} ${plural(per, 'штамп', 'штампа', 'штампов')}</b>: подарочный стакан примерно ${wk <= 1 ? 'каждую неделю' : `раз в ${wk} ${plural(wk, 'неделю', 'недели', 'недель')}`}` : '';
+    const s = nx, e = new Date(s.getTime() + 5 * 6e4), f = d => `${d.getFullYear()}${p2(d.getMonth() + 1)}${p2(d.getDate())}T${p2(d.getHours())}${p2(d.getMinutes())}00`;
+    rt._ = { s, e, f, rule: 'FREQ=WEEKLY;BYDAY=' + ORDER.filter(i => rt.d.includes(i)).map(i => BY[i]).join(',') };
+    const g = new URLSearchParams({ action: 'TEMPLATE', text: title(), details: details(), dates: f(s) + '/' + f(e), recur: 'RRULE:' + rt._.rule, ctz: 'Europe/Moscow' });
+    $('rtG').href = 'https://calendar.google.com/calendar/render?' + g;
+    save();
+  }
+  const title = () => `☕ ${parse(label()).base} в «Зёрнышко» — заказать в одно касание`;
+  const details = () => `${nice(label()).replace(/<small>/, ' (').replace('</small>', ')')} будет готов через ${rt.w} мин после нажатия. Откройте ссылку — заказ уже собран, останется отправить SMS. Оплата на месте.\n\n${deep()}`;
+  $('rtAdd').onclick = () => {
+    const { s, e, f, rule } = rt._, x = t => t.replace(/[\\,;]/g, m => '\\' + m).replace(/\n/g, '\\n');
+    const now = new Date(), stamp = now.toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Zernyshko//Coffee alarm//RU', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
+      `UID:ritual-${Date.now()}@zernyshko`, 'DTSTAMP:' + stamp, 'DTSTART:' + f(s), 'DTEND:' + f(e), 'RRULE:' + rule,
+      'SUMMARY:' + x(title()), 'DESCRIPTION:' + x(details()), 'URL:' + deep(), 'TRANSP:TRANSPARENT',
+      'BEGIN:VALARM', 'ACTION:DISPLAY', 'TRIGGER:PT0M', 'DESCRIPTION:' + x(title()), 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); a.download = 'zernyshko-kofe.ics';
+    document.body.append(a); a.click(); a.remove();
+    $('ritual').classList.add('set');
+    toast(`⏰ Будильник: ${daysText()} в ${clk(rt.at)} — откройте файл, он добавится в календарь`);
+  };
+  // «попробовать» — нажатие на уведомление открывает тот же экран, что и утром
+  $('rtPhone').addEventListener('click', e => { e.preventDefault(); location.hash = $('rtPhone').href.split('#')[1]; location.reload(); });
+  draw();
+  setInterval(() => { if (!document.hidden) draw(); }, 60e3);
+})();
+// ——— «Угостить кофе»: открытка-ссылка. Вы платите со своим заказом, друг выбирает время и забирает по коду ———
+const TR_DRINKS = ['Капучино', 'Латте', 'Раф', 'Американо', 'Эспрессо', 'Чай'];
+const TR_WHY = [['🙏', 'Спасибо, что выручили!'], ['🎂', 'С днём рождения!'], ['💪', 'Держитесь, вы справитесь'], ['☀️', 'С добрым утром'], ['☕', 'Просто так']];
+const readGiven = () => { try { const a = JSON.parse(localStorage.getItem(GV)); return Array.isArray(a) ? a.filter(g => Date.now() - g.at < 30 * 864e5) : []; } catch (e) { return []; } };
+const saveGiven = a => { try { localStorage.setItem(GV, JSON.stringify(a)); } catch (e) {} };
+const cleanMsg = s => String(s || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 80);
+const lc = s => s.charAt(0).toLowerCase() + s.slice(1);
+const giftLink = g => location.href.split('#')[0] + '#t=' + enc({ f: g.f, t: g.t, d: g.d, m: g.m, c: g.c });
+// открытка: марка со стаканом, штемпель, пара слов от руки
+const pcHTML = g => `<div class="pc"><div class="pc-stamp">${art(g.d, 1)}<span>подарок</span></div><span class="pc-mark" aria-hidden="true">Зёрнышко<br>Примерная, 1</span>` +
+  `<p class="pc-to">${esc(g.t)},</p><p class="pc-msg">${esc(g.m)}</p><p class="pc-gift">Угощаю: <b>${esc(lc(nice(g.d).replace(/<small>/, ' · ').replace(/<\/small>/, '')))}</b></p><p class="pc-from">— ${esc(g.f)}</p></div>`;
+let tr = { d: 'Капучино', why: 0 };
+$('trCups').innerHTML = TR_DRINKS.map(n => `<button type="button" role="radio" data-n="${n}">${art(n, 1)}<span>${n}</span><i>${rub(PRICE[n])}</i></button>`).join('');
+$('trCups').querySelectorAll('button').forEach(x => x.onclick = () => { tr.d = x.dataset.n; drawTreat(true); });
+$('trWhy').innerHTML = TR_WHY.map(([e, t], i) => `<button type="button" data-i="${i}">${e} ${t}</button>`).join('');
+$('trWhy').querySelectorAll('button').forEach(x => x.onclick = () => { tr.why = +x.dataset.i; $('trMsg').value = TR_WHY[tr.why][1]; drawTreat(); });
+$('trMsg').value = TR_WHY[0][1];
+$('trFrom').value = myName();
+['trTo', 'trMsg', 'trFrom'].forEach(id => $(id).addEventListener('input', () => { if (id === 'trMsg') tr.why = -1; drawTreat(); }));
+$('trFrom').addEventListener('change', e => setName(cleanName(e.target.value)));
+function drawTreat(redrawCup) {
+  const to = cleanName($('trTo').value), from = cleanName($('trFrom').value), msg = cleanMsg($('trMsg').value);
+  $('trCups').querySelectorAll('button').forEach(x => x.setAttribute('aria-checked', x.dataset.n === tr.d));
+  $('trWhy').querySelectorAll('button').forEach(x => x.classList.toggle('on', +x.dataset.i === tr.why));
+  if (redrawCup || !$('trCup').innerHTML) { $('trCup').innerHTML = art(tr.d, 1); const c = $('trCard'); c.classList.remove('flip'); void c.offsetWidth; c.classList.add('flip'); }
+  $('trPrice').textContent = rub(PRICE[tr.d]);
+  $('trToT').textContent = to || 'Кому-то хорошему';
+  $('trMsgT').textContent = msg || '…';
+  $('trDrinkT').textContent = lc(tr.d);
+  $('trFromT').textContent = from || 'ваше имя';
+  $('trFromT').classList.toggle('ph', !from); $('trToT').classList.toggle('ph', !to);
+  $('trGo').textContent = `🎁 Угостить${to ? ' ' + to : ''} · ${rub(PRICE[tr.d])}`;
+  // уже отправленные открытки — можно переслать
+  const given = readGiven();
+  $('trSent').innerHTML = given.length ? '<li class="h">Ваши открытки</li>' + given.map((g, i) =>
+    `<li>${art(g.d, 1)}<span><b>${esc(g.t)}</b> · ${esc(lc(parse(g.d).base))} · код ${g.c}</span><button type="button" data-i="${i}">${g.s ? 'Переслать' : 'Отправить'}</button></li>`).join('') : '';
+  $('trSent').querySelectorAll('button').forEach(x => x.onclick = () => openSendGift([given[+x.dataset.i]]));
+}
+const nudge = el => { el.focus(); el.classList.remove('nudge'); void el.offsetWidth; el.classList.add('nudge'); };
+$('trGo').onclick = () => {
+  const t = cleanName($('trTo').value), f = cleanName($('trFrom').value), m = cleanMsg($('trMsg').value) || 'Просто так';
+  if (!t) return nudge($('trTo'));
+  if (!f) return nudge($('trFrom'));
+  if (guest) return toast('Сначала закончите общий заказ — потом угостите 🙂');
+  setName(f);
+  gifts.push({ t, f, m, d: tr.d, c: String(100 + Math.floor(Math.random() * 900)), at: Date.now() });
+  saveGifts();
+  $('trTo').value = ''; drawTreat();
+  toast(`🎁 Подарок для ${t} в заказе — открытку отправите после оформления`);
+  openCheckout();
+};
+// после отправки заказа: открытки по очереди — каждому своя ссылка
+let sgQ = [];
+function openSendGift(list) {
+  sgQ = list.slice(); const g = sgQ[0]; if (!g) return;
+  $('sgTitle').innerHTML = `Открытка для ${esc(g.t)} <em>готова</em>` + (sgQ.length > 1 ? ` <small>ещё ${sgQ.length - 1}</small>` : '');
+  $('sgCard').innerHTML = pcHTML(g);
+  if (!$('sendGift').open) $('sendGift').showModal();
+}
+shareRow($('sgShare'), () => {
+  const g = sgQ[0]; if (!g) return null;
+  return { text: `${g.t}, я угощаю тебя кофе в «Зёрнышке» ☕ Открой открытку и выбери, когда зайдёшь:`, url: giftLink(g) };
+}, () => {
+  const g = sgQ.shift();
+  saveGiven(readGiven().map(x => x.c === g.c && x.t === g.t ? { ...x, s: 1 } : x)); drawTreat();
+  setTimeout(() => sgQ.length ? openSendGift(sgQ) : $('sendGift').close(), 900);
+});
+$('sendGift').addEventListener('click', e => { if (e.target === $('sendGift')) $('sendGift').close(); });
+
+// получатель: открытка из ссылки живёт на устройстве, пока подарок не забрали
+let present = null;
+try { const o = JSON.parse(localStorage.getItem(PS)); if (o && Date.now() - o.at < 30 * 864e5) present = o; } catch (e) {}
+(function () {
+  const m = location.hash.match(/^#t=([\w-]+)/); if (!m) return;
+  history.replaceState(null, '', location.pathname + location.search);
+  let d = null; try { d = dec(m[1]); } catch (e) {}
+  const it = d && cleanItems([[d.d, 1]]);
+  if (!it || !it.length) return;
+  const g = { f: cleanName(d.f) || 'Друг', t: cleanName(d.t) || 'Привет', m: cleanMsg(d.m) || 'Просто так', d: it[0][0], c: String(d.c | 0).slice(0, 4), at: Date.now() };
+  const mine = readGiven().find(x => x.c === g.c && x.t === g.t);
+  if (mine) { setTimeout(() => { toast('Это ваша открытка — отправьте её другу'); openSendGift([mine]); }, 300); return; }
+  present = g; try { localStorage.setItem(PS, JSON.stringify(g)); } catch (e) {}
+})();
+function showPresent() {
+  const g = present; if (!g) return;
+  $('psCup').innerHTML = art(g.d, 1);
+  $('psTo').textContent = g.t; $('psMsg').textContent = g.m; $('psFrom').textContent = g.f;
+  $('psDrink').textContent = lc(parse(g.d).base); $('psWho').textContent = g.f;
+  $('psWhat').textContent = lc(parse(g.d).base); $('psCode').textContent = g.c;
+  const opts = slotTimes().slice(0, 3), tmr = isTmr(opts[0]), box = $('psSlots');
+  $('psSlotsHead').innerHTML = tmr ? `Когда зайдёте <em>завтра</em>?` : 'Когда зайдёте?';
+  box.innerHTML = '';
+  let t = opts[0];
+  const upd = () => {
+    const items = [[g.d, 1]];
+    $('psSend').textContent = `${tmr ? '🌙 ' : '🎁 '}Забрать ${whenOf(t)}`;
+    $('psSend').href = 'sms:88000000000?&body=' + encodeURIComponent(`Забираю подарок, код ${g.c}: ${one(g.d)} — угощает ${g.f}. Буду ${whenOf(t)}.` + (tmr ? ' Это заказ с вечера на утро.' : ''));
+    $('psSend').onclick = () => {
+      fire(items, t, g.c, '');
+      present = null; try { localStorage.removeItem(PS); } catch (e) {}
+      topView = topView === 'present' ? 'hero' : topView;
+      setTimeout(() => toast(`☕ Приятного кофе! Захотите угостить в ответ — раздел «Угостить кофе»`), 4400);
+    };
+  };
+  opts.forEach((x, i) => {
+    const b = document.createElement('button'); b.type = 'button';
+    b.textContent = 'К ' + hm(x) + (i === 0 ? (tmr ? ' · к открытию' : ' · быстрее всего') : '');
+    b.onclick = () => { t = x; box.querySelectorAll('button').forEach(y => y.classList.toggle('on', y === b)); upd(); };
+    box.append(b); if (!i) b.click();
+  });
+  topView = 'present'; setTop('present');
+  const env = $('env'); env.classList.remove('open'); requestAnimationFrame(() => setTimeout(() => env.classList.add('open'), 350));
+}
+$('psBack').addEventListener('click', () => { if (!present) return; $('trTo').value = present.f; $('trFrom').value = present.t; drawTreat(); });
+$('psLater').onclick = () => $('menu').scrollIntoView({ behavior: 'smooth' });
+drawTreat(true);
+if (present) { showPresent(); scrollTo({ top: 0 }); }
+
+if (RIT) scrollTo({ top: 0 });
+if (guest) setTop('guest');
+render();
+onHash();
+showLive(); // вернулись на сайт, пока заказ ещё ждёт — сразу показываем талон
+$('toRoute').addEventListener('click', () => $('checkout').close());
+// маршрут «оживает», когда до него доскроллили
+(function () {
+  const r = $('route');
+  if (!('IntersectionObserver' in window)) return r.classList.add('go');
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { r.classList.add('go'); io.disconnect(); } }), { threshold: .3 });
+  io.observe(r);
+})();
+$('checkout').addEventListener('click', e => { if (e.target === $('checkout')) $('checkout').close(); });
+
+// ——— «Витрина — сейчас»: выпечка тает с полок в течение дня; отложить к приходу в одно касание ———
+(function vitrine() {
+  // партии: [часов от открытия, сколько штук], tau — как быстро разбирают (часы)
+  const VT = {
+    'Круассан':           { b: [[-.5, 22], [5, 12]], tau: 2.4, pl: 'Круассаны', one: 'круассан', many: ['круассан', 'круассана', 'круассанов'], warm: 'ещё тёплые' },
+    'Синнабон':           { b: [[1, 10]], tau: 3.2, pl: 'Синнабоны', one: 'синнабон', many: ['синнабон', 'синнабона', 'синнабонов'], warm: 'из духовки' },
+    'Пирожок с капустой': { b: [[-.5, 16], [4.5, 10]], tau: 3, pl: 'Пирожки с капустой', one: 'пирожок', many: ['пирожок', 'пирожка', 'пирожков'], warm: 'горячие' },
+    'Морковный кекс':     { b: [[-.5, 8]], tau: 6, pl: 'Морковный кекс', one: 'кекс', many: ['кусочек кекса', 'кусочка кекса', 'кусочков кекса'], warm: 'свежий' },
+  };
+  const NAMES = Object.keys(VT);
+  const seed = (d, n) => { let x = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate(); for (const ch of n) x = (x * 31 + ch.charCodeAt(0)) % 9973; return x / 9973; };
+  const POS = [[68, 52], [4, 52], [132, 52], [36, 27], [100, 27], [68, 2]];
+  const ORDER = { 1: [0], 2: [3, 4], 3: [1, 0, 2], 4: [1, 0, 2, 5], 5: [1, 0, 2, 3, 4], 6: [1, 0, 2, 3, 4, 5] };
+  const at = (d, h) => { const t = new Date(d); t.setHours(Math.floor(h), Math.round((h % 1) * 60), 0, 0); return t; };
+  const mine = n => Object.entries(cart).reduce((s, [k, it]) => s + (parse(k).base === n ? it.qty : 0), 0);
+
+  function stock() { // сколько каждого сейчас на полке
+    const now = new Date(), [o, c] = hours(now), h = now.getHours() + now.getMinutes() / 60;
+    const mode = h < o ? 'pre' : h >= c - .25 ? 'night' : 'live';
+    const day = mode === 'night' ? new Date(now.getTime() + 864e5) : now, o2 = hours(day)[0];
+    return { mode, now, day, open: o2, list: NAMES.map(n => {
+      const v = VT[n], k = .85 + seed(day, n) * .3;
+      let left = 0, last = null, next = null;
+      v.b.forEach(([bh, sz]) => {
+        const t0 = o2 + bh, size = Math.round(sz * k);
+        if (mode !== 'live') { if (bh <= 0) left += size; else next = next || at(day, t0); return; }
+        if (h < t0) { next = next || at(day, t0); return; }
+        left += size * Math.exp(-(h - t0) / v.tau); last = t0;
+      });
+      left = Math.floor(left + .35);
+      const warm = mode === 'live' && last !== null && h - last < .75;
+      return { n, v, left, free: Math.max(0, left - mine(n)), warm, next, baked: last !== null ? at(day, Math.max(last, o2 - .5)) : at(day, o2 - .5) };
+    }) };
+  }
+
+  const pile = names => { // тарелка с горкой: снизу три, потом две, сверху одна
+    const pos = (ORDER[Math.min(names.length, 6)] || []).map(i => POS[i]);
+    return `<svg class="vt-pile" viewBox="0 0 200 122" aria-hidden="true"><ellipse cx="100" cy="112" rx="94" ry="9" fill="#fff" stroke="#2a1d15" stroke-width="2"/><ellipse cx="100" cy="110" rx="76" ry="5" fill="#2a1d15" opacity=".06"/>` +
+      pos.map(([x, y], i) => `<g transform="translate(${x} ${y}) scale(.64)"><g class="pc" style="--i:${i}">${BAKE[names[i]]}</g></g>`).join('') + `</svg>`;
+  };
+
+  let lastFree = {}, plateSig = null;
+  function draw() {
+    const S = stock(), live = S.mode === 'live', inCart = NAMES.filter(n => mine(n));
+    $('vtClock').textContent = live ? 'сейчас ' + hm(S.now) : (S.mode === 'night' ? 'завтра ' : '') + 'к ' + S.open + ':00';
+    $('vtNow').textContent = live ? 'сейчас' : S.mode === 'night' ? 'на завтра' : 'к открытию';
+    $('vtSign').textContent = EVE ? 'Вечерняя витрина · −30%' : live ? 'Свежая выпечка' : 'Печём к открытию';
+    $('vtSub').textContent = live ? 'столько выпечки на полках в эту минуту — к обеду её разбирают'
+      : 'столько испечём утром — первые уходят за полчаса — отложите заранее';
+    $('vt').classList.toggle('eve', EVE); $('vt').classList.toggle('dim', !live);
+    const foc = document.activeElement && document.activeElement.closest && document.activeElement.closest('.vt-it'), focN = foc && foc.dataset.n;
+    $('vtShelf').innerHTML = S.list.map(x => {
+      const show = Math.min(x.free, 6), out = !x.free, low = x.free && x.free <= 3, price = PRICE[x.n];
+      const tag = out ? (x.left ? 'все ваши 🙂' : x.next ? 'новая партия в ' + hm(x.next) : 'разобрали — завтра с утра')
+        : (live ? (low ? `последн${x.free === 1 ? 'ий' : 'ие'} ${x.free}` : `осталось ${x.free}`) : `испечём ${x.free}`);
+      const fresh = x.warm ? `<span class="vt-warm">${x.v.warm}</span>` : '';
+      const was = lastFree[x.n] !== undefined && lastFree[x.n] > x.free ? ' took' : '';
+      return `<li><button type="button" class="vt-it${out ? ' out' : ''}${low ? ' low' : ''}${was}" data-n="${x.n}" ${out ? 'disabled' : ''}
+        aria-label="${x.n}, ${price} рублей, ${tag}. Отложить">${fresh}${pile(Array(show).fill(x.n))}
+        <span class="vt-card"><b>${x.n}</b><em>${EVE ? `<s>${BASE[x.n]}</s> ` : ''}${rub(price)}</em></span>
+        <span class="vt-left">${tag}</span>${out ? '' : '<span class="vt-plus">+ отложить</span>'}</button></li>`;
+    }).join('');
+    S.list.forEach(x => lastFree[x.n] = x.free);
+    if (focN) { const b = $('vtShelf').querySelector(`.vt-it[data-n="${focN}"]`); if (b && !b.disabled) b.focus({ preventScroll: true }); }
+    $('vtShelf').querySelectorAll('.vt-it:not(.out)').forEach(b => b.onclick = () => {
+      const n = b.dataset.n; add(n);
+      toast(`🥐 ${VT[n].one[0].toUpperCase() + VT[n].one.slice(1)} отложен — тарелка №${orderNo} ждёт вас`);
+    });
+
+    // правая часть: подсказка + «ваша тарелка»
+    const coffee = Object.keys(cart).filter(k => cart[k].qty && isCoffee(k)).map(k => parse(k).base)[0];
+    const avail = S.list.filter(x => x.free), scarce = avail.slice().sort((a, b) => a.free - b.free)[0], warm = avail.find(x => x.warm);
+    $('vtEve').hidden = !EVE;
+    if (EVE) $('vtEve').innerHTML = `🌙 <b>Вечерняя витрина:</b> до ${hours(S.now)[1]}:00 всё, что осталось, — на 30% дешевле. Лучше вам, чем в конце дня — никому.`;
+    const pick = warm || scarce, many = x => `${x.free} ${plural(x.free, ...x.v.many)}`;
+    let say;
+    if (!avail.length) say = 'Сегодня всё разобрали 😌 Завтра утром испечём снова — можно отложить с вечера, после закрытия витрина откроется на завтра.';
+    else if (!live) say = `Утром испечём ${many(S.list[0])} — к 9 утра обычно остаётся половина. Отложите заранее: ваши будут ждать на тарелке с номером.`;
+    else if (coffee && !inCart.length) say = `К вашему ${coffee === 'Раф' ? 'рафу' : coffee.toLowerCase()} — <b>${pick.v.one}</b>${pick.warm ? ' из свежей партии' : ''}? Осталось ${many(pick)}.`;
+    else if (warm) say = `<b>${warm.v.pl} ${warm.v.warm}</b> — испекли в ${hm(warm.baked)}. На полке ${many(warm)}, к обеду обычно не остаётся.`;
+    else say = `Меньше всего осталось: <b>${many(scarce)}</b>. Отложите — заберёте вместе с кофе, даже если витрина опустеет.`;
+    $('vtSay').innerHTML = say;
+
+    const plate = inCart.flatMap(n => Array(Math.min(mine(n), 4)).fill(n)).slice(0, 6);
+    const cnt = inCart.reduce((s, n) => s + mine(n), 0);
+    const sig = plate.join() + cnt + orderNo;
+    if (sig !== plateSig) { // перерисовываем тарелку, только когда она изменилась, — иначе выпечка «прыгает» каждую минуту
+      plateSig = sig;
+      $('vtPlate').className = 'vt-plate' + (cnt ? ' on' : '');
+      $('vtPlate').innerHTML = cnt
+        ? pile(plate) + `<span class="vt-no">№${orderNo}<small>для вас</small></span><p>${inCart.map(n => `${n}${mine(n) > 1 ? ' ×' + mine(n) : ''}`).join(', ')}</p>`
+        : `<span class="vt-empty">Здесь будет ваша тарелка — коснитесь выпечки на полке</span>`;
+    }
+    $('vtGo').hidden = !cnt;
+    $('vtGo').textContent = guest ? 'В общий заказ →' : coffee ? `Оформить: ${coffee.toLowerCase()} и выпечка →` : 'Отложить к приходу →';
+  }
+  $('vtGo').onclick = () => guest ? openHand() : openCheckout();
+  $('heroVt').onclick = e => { e.preventDefault(); $('vt').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  window.vtDraw = draw;
+  draw();
+  setInterval(draw, 6e4);
+})();
+
+// ——— «Скажите заказ»: свободная фраза → стаканы, опции, количество и время ———
+const SY_P = [[/^(эспрес|экспрес|espres)/, 'Эспрессо'], [/^америк/, 'Американо'], [/^капуч/, 'Капучино'], [/^(латт|лате$|латэ)/, 'Латте'],
+  [/^раф/, 'Раф'], [/^ча(й|я$|ю$|ем$|ек|ик)/, 'Чай'], [/^круас/, 'Круассан'], [/^пирож/, 'Пирожок с капустой'], [/^(синаб|синнаб|булочк|улитк)/, 'Синнабон'], [/^(кекс|морков)/, 'Морковный кекс']];
+const SY_O = [[/^(больш|побольш|огромн)/, 'big'], [/^(двойн|дабл|допио|доппио)/, 'double'], [/^(крепч|покрепч|крепк|шот|доп)/, 'shot'],
+  [/^(овся|овес)/, 'oat'], [/^кокос/, 'coco'], [/^(безлакт|лактоз)/, 'lf'], [/^ванил/, 'van'], [/^карамел/, 'car'],
+  [/^(орех|фундук|лесн)/, 'nut'], [/^зелен/, 'green'], [/^лимон/, 'lemon'], [/^(маленьк|обычн|стандарт|черн|коровь|классич)/, '']];
+const SY_N = { один: 1, одна: 1, одно: 1, одного: 1, одну: 1, два: 2, две: 2, пару: 2, пара: 2, парочку: 2, три: 3, трое: 3, четыре: 4, пять: 5, шесть: 6, семь: 7, восемь: 8, девять: 9, десять: 10 };
+const SY_MIN = { пять: 5, десять: 10, пятнадцать: 15, двадцать: 20, тридцать: 30, сорок: 40, пятьдесят: 50, полчаса: 30, час: 60, часик: 60, полтора: 90 };
+const SY_H = { восемь: 8, восьми: 8, девять: 9, девяти: 9, десять: 10, десяти: 10, одиннадцать: 11, одиннадцати: 11, двенадцать: 12, двенадцати: 12, часу: 13, двум: 14, двух: 14, трем: 15, трех: 15, четырем: 16, четырех: 16, пяти: 17, шести: 18, семи: 19 };
+const SY_SEP = new Set([',', ';', '+', 'и', 'еще', 'плюс', 'а', 'также', 'потом', 'ну']);
+const SY_FILL = new Set('с со на без мне нам пожалуйста пжл хочу хотим можно дайте сделайте будьте добры шт утра вечера часам часов часа мин утром давай привет возьму буду заберу зайду у вас я мы по для из в к около ещё сахара сахар капустой тогда всё все спасибо как обычно'.split(' '));
+const SY_STEM = /^(сироп|стакан|чашк|штук|порци|минут|здравств|хотел|капуст|горяч|кружк|пирожк)/;
+const SY_EX = ['два капучино на овсяном и круассан к 9:30', 'большой латте с карамелью через 15 минут', 'раф с ванилью, чай с лимоном и пирожок', 'двойной эспрессо побыстрее', 'кофе с молоком без сахара, заберу через полчаса'];
+let syAt = null, syTyping = 0;
+
+function syParse(raw) {
+  const s = raw.toLowerCase().replace(/ё/g, 'е'), toks = [];
+  for (const m of s.matchAll(/\d{1,2}[:.]\d{2}|\d+|[a-zа-я]+|[,;+]/g)) toks.push({ w: m[0], s: m.index, e: m.index + m[0].length, k: '' });
+  const items = [], skipped = [], unknown = [];
+  let when = null, tmr = false, qty = null, pend = [], segItem = null, coffee = false, milkish = false;
+  const num = w => /^\d+$/.test(w) ? +w : null;
+  const apply = (it, k) => {
+    const g = CUSTOM[it.name]; if (!g || !k) return;
+    if (k === 'double' && it.name !== 'Эспрессо') k = 'shot';
+    else if (k === 'shot' && it.name === 'Эспрессо') k = 'double';
+    const gi = g.findIndex(([, o]) => o.some(([x]) => x === k));
+    if (gi < 0) { skipped.push(`${OPT[k].t} — не для ${it.name.toLowerCase()}`); return; }
+    it.sel[gi] = k;
+  };
+  const endSeg = () => {
+    if (!segItem && coffee) { // «кофе с молоком» → латте, просто «кофе» → американо
+      segItem = { name: milkish ? 'Латте' : 'Американо', q: qty || 1, sel: CUSTOM[milkish ? 'Латте' : 'Американо'].map(() => ''), guess: 1 };
+      items.push(segItem); qty = null;
+    }
+    const tgt = segItem || items[items.length - 1];
+    if (tgt) { pend.forEach(k => apply(tgt, k)); pend = []; } // «на овсяном, латте» — опция дождётся напитка
+    segItem = null; coffee = false; milkish = false;
+  };
+  for (let i = 0; i < toks.length; i++) {
+    const t = toks[i], w = t.w, nx = toks[i + 1] || {}, nw = nx.w || '';
+    if (SY_SEP.has(w)) { t.k = 's'; endSeg(); continue; }
+    // «через 15 минут», «через полчаса», «через двадцать пять минут»
+    if (w === 'через') {
+      let j = i + 1, m = 0, unit = false;
+      while (toks[j] && (num(toks[j].w) !== null || SY_MIN[toks[j].w] || SY_N[toks[j].w])) {
+        const x = toks[j].w; if (SY_MIN[x] >= 30) unit = true; m += num(x) !== null ? num(x) : SY_MIN[x] || SY_N[x]; j++;
+      }
+      if (!m && toks[j] && /^(минут|мин|час)/.test(toks[j].w)) { m = /^час/.test(toks[j].w) ? 60 : 5; j++; }
+      else if (toks[j] && /^час/.test(toks[j].w)) { if (!unit) m *= 60; j++; }
+      else if (toks[j] && /^мин/.test(toks[j].w)) j++;
+      if (m) { for (let x = i; x < j; x++) toks[x].k = 't'; when = { in: m }; i = j - 1; continue; }
+    }
+    // «к 9:30», «в 8 40», «к девяти», «на 10»
+    if (/^(к|в|на|около|часам)$/.test(w) && nw && (/^\d{1,2}([:.]\d{2})?$/.test(nw) || SY_H[nw])) {
+      let h, mm = 0, j = i + 2;
+      if (SY_H[nw]) h = SY_H[nw];
+      else if (/[:.]/.test(nw)) [h, mm] = nw.split(/[:.]/).map(Number);
+      else { h = +nw; const n2 = toks[i + 2] && toks[i + 2].w; if (/^\d{2}$/.test(n2 || '') && +n2 < 60) { mm = +n2; j++; } }
+      if (h <= 24 && mm < 60 && !(toks[j] && (/^(мин|шт|штук|стакан|чашк)/.test(toks[j].w) || SY_P.some(([x]) => x.test(toks[j].w))))) {
+        if (toks[j] && /^(утра|часам|часов|часа)$/.test(toks[j].w)) j++;
+        else if (toks[j] && /^вечера$/.test(toks[j].w)) { if (h < 12) h += 12; j++; }
+        if (h < 8) h += 12; // «к двум», «в 3» — днём
+        for (let x = i; x < j; x++) toks[x].k = 't'; when = { h, m: mm }; i = j - 1; continue;
+      }
+    }
+    if (/^\d+$/.test(w) && /^мин/.test(nw)) { t.k = nx.k = 't'; when = { in: +w }; i++; continue; }
+    if (w === 'завтра') { t.k = 't'; tmr = true; continue; }
+    if (/^(сейчас|сразу|побыстрее|быстрее|скорее|срочно|поскорее)$/.test(w)) { t.k = 't'; when = { asap: 1 }; continue; }
+    const n = SY_N[w] || (/^\d{1,2}$/.test(w) && +w > 0 && +w <= 20 ? +w : 0);
+    if (n) { t.k = 'q'; if (segItem && !SY_P.some(([x]) => x.test(nw))) segItem.q = n; else { if (segItem) endSeg(); qty = n; } continue; } // «капучино две штуки»
+    const p = SY_P.find(([r]) => r.test(w));
+    if (p) {
+      t.k = 'p';
+      if (segItem) { pend.forEach(k => apply(segItem, k)); pend = []; } // «латте круассан» без запятой — это две позиции
+      const name = p[1]; segItem = { name, q: qty || 1, sel: (CUSTOM[name] || []).map(() => '') };
+      pend.forEach(k => apply(segItem, k)); pend = []; qty = null; items.push(segItem);
+      continue;
+    }
+    const o = SY_O.find(([r]) => r.test(w));
+    if (o) {
+      t.k = 'o';
+      const neg = toks[i - 1] && toks[i - 1].w === 'без' && o[1] !== 'lf';
+      if (['oat', 'coco', 'lf'].includes(o[1]) && !neg) milkish = true;
+      if (o[1] && !neg) segItem ? apply(segItem, o[1]) : pend.push(o[1]);
+      continue;
+    }
+    if (/^кофе|^кофей/.test(w)) { t.k = 'f'; coffee = true; continue; }
+    if (/^молок/.test(w)) { t.k = 'f'; if (!(toks[i - 1] && toks[i - 1].w === 'без')) milkish = true; continue; }
+    if (SY_FILL.has(w) || SY_STEM.test(w)) { t.k = 'f'; continue; }
+    if (w.length > 2 && !/^\d/.test(w)) { t.k = 'u'; unknown.push(raw.slice(t.s, t.e)); }
+  }
+  endSeg();
+  // одинаковые стаканы — одной строкой
+  const lines = [];
+  items.forEach(it => {
+    const label = [it.name, ...it.sel.filter(Boolean).map(k => OPT[k].t)].join(' · ');
+    const same = lines.find(l => l.label === label);
+    same ? same.q += it.q : lines.push({ label, q: it.q, guess: it.guess });
+  });
+  return { toks, lines, when, tmr, skipped, unknown };
+}
+
+function syTime(r) {
+  const now = new Date(), first = slotTimes()[0];
+  if (!r.when && r.tmr) { const d = new Date(now.getTime() + 864e5); d.setHours(hours(d)[0], 10, 0, 0); return { d, say: whenOf(d) + ' — к открытию' }; }
+  if (!r.when || r.when.asap) return { d: null, say: r.when ? 'как можно скорее — ' + whenOf(first) : '' };
+  let d;
+  if (r.when.in) { d = new Date(now.getTime() + r.when.in * 6e4); d.setSeconds(0, 0); d.setMinutes(Math.ceil(d.getMinutes() / 5) * 5); }
+  else {
+    d = new Date(now); d.setHours(r.when.h, r.when.m, 0, 0);
+    if (r.tmr || d < now) d = new Date(d.getTime() + 864e5);
+  }
+  if (d < first) return { d: first, say: isTmr(first) && !isTmr(d) ? `сейчас мы закрыты — сварим ${whenOf(first)}` : `быстрее не успеем сварить — будет ${whenOf(first)}` };
+  const [o, c] = hours(d), h = d.getHours() + d.getMinutes() / 60;
+  if (h < o || h >= c - .25) return { d: null, bad: 1, say: `${isTmr(d) ? 'завтра' : 'сегодня'} мы работаем с ${o}:00 до ${c}:00 — время выберете при оформлении` };
+  return { d, say: whenOf(d) };
+}
+
+function syDraw() {
+  const raw = $('syText').value, r = syParse(raw);
+  $('syNo').textContent = 'заказ №' + orderNo;
+  // подсветка: что именно бариста услышал
+  let html = '', at = 0;
+  r.toks.forEach(t => { html += esc(raw.slice(at, t.s)); const w = esc(raw.slice(t.s, t.e)); html += t.k && t.k !== 's' ? `<mark class="${t.k}">${w}</mark>` : w; at = t.e; });
+  $('syHeard').innerHTML = raw.trim() ? html + esc(raw.slice(at)) : '';
+  const L = r.lines, has = L.length > 0;
+  $('syEmpty').hidden = has;
+  const sig = JSON.stringify(L), box = $('syLines');
+  if (box.dataset.sig !== sig) { box.dataset.sig = sig;
+  const prev = new Set([...box.children].map(li => li.dataset.l));
+  box.innerHTML = L.map(l => `<li data-l="${esc(l.label)}"${prev.has(l.label) ? '' : ' class="new"'}>${art(l.label, 1)}<span class="nm">${nice(l.label)}${l.guess ? '<em>так поняли «кофе» — можно поправить словами</em>' : ''}</span><span class="qy">${l.q > 1 ? '×' + l.q : ''}</span><b>${rub(priceOf(l.label) * l.q)}</b></li>`).join(''); }
+  const tm = syTime(r);
+  syAt = tm.d;
+  $('syWhen').hidden = !has;
+  $('syWhen').innerHTML = tm.say ? `⏱ <b>${tm.say}</b>` : '⏱ <span>время выберете на следующем шаге — или скажите «к 9:30»</span>';
+  $('syWhen').classList.toggle('bad', !!tm.bad);
+  const miss = [...r.skipped, ...r.unknown.slice(0, 3).map(u => `«${esc(u)}» — не расслышал`)];
+  $('syMiss').hidden = !miss.length || !raw.trim();
+  $('syMiss').innerHTML = miss.join('<br>') + (r.unknown.length ? ' · <a href="#menu">что у нас есть</a>' : '');
+  const sum = L.reduce((s, l) => s + priceOf(l.label) * l.q, 0), n = L.reduce((s, l) => s + l.q, 0);
+  $('sySum').hidden = !has; $('syTotal').textContent = rub(sum);
+  $('syGo').disabled = !has;
+  $('syGo').textContent = has ? `Всё верно — ${n} ${plural(n, 'позиция', 'позиции', 'позиций')} к оформлению` : 'Всё верно — к оформлению';
+  return r;
+}
+$('syText').addEventListener('input', () => { syTyping++; syDraw(); });
+
+// примеры: «печатаем» фразу, чтобы было видно, как слова превращаются в стаканы
+$('syEx').innerHTML = SY_EX.map(x => `<button type="button">${x}</button>`).join('');
+$('syEx').querySelectorAll('button').forEach(b => b.onclick = () => {
+  const txt = b.textContent, me = ++syTyping, ta = $('syText');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { ta.value = txt; syDraw(); return; }
+  let k = 0; ta.value = '';
+  (function step() { if (me !== syTyping) return; ta.value = txt.slice(0, ++k); syDraw(); if (k < txt.length) setTimeout(step, 28); })();
+});
+
+// голос: распознавание речи в браузере (Chrome, Safari) — пока говорите, текст и блокнот обновляются
+(function () {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition, mic = $('syMic');
+  if (!SR) return;
+  mic.hidden = false; $('syTip').textContent = '🎙 Нажмите на микрофон и скажите заказ — как бариста у стойки.';
+  let rec = null;
+  mic.onclick = () => {
+    if (rec) { rec.stop(); return; }
+    rec = new SR(); rec.lang = 'ru-RU'; rec.interimResults = true; rec.continuous = false;
+    const base = $('syText').value.trim();
+    rec.onresult = e => { syTyping++; $('syText').value = (base ? base + ', ' : '') + [...e.results].map(x => x[0].transcript).join(' '); syDraw(); };
+    rec.onerror = e => { if (e.error === 'not-allowed') toast('Нет доступа к микрофону — можно просто написать'); };
+    rec.onend = () => { rec = null; mic.classList.remove('rec'); mic.setAttribute('aria-label', 'Сказать голосом'); };
+    try { rec.start(); mic.classList.add('rec'); mic.setAttribute('aria-label', 'Остановить запись'); } catch (e) { rec = null; }
+  };
+})();
+
+$('syGo').onclick = () => {
+  const r = syDraw(); if (!r.lines.length) return;
+  r.lines.forEach(l => add(l.label, l.q));
+  if (guest) { openHand(); return; }
+  buildSlots();
+  if (syAt) { // время из фразы — отдельной кнопкой, уже выбрано
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'said';
+    b.textContent = (isTmr(syAt) ? 'Завтра к ' : 'К ') + hm(syAt) + ' · как вы сказали';
+    const d = syAt;
+    b.onclick = () => { slot = d; $('slots').querySelectorAll('button').forEach(y => y.classList.toggle('on', y === b)); updateSend(); };
+    $('slots').prepend(b); b.click();
+  }
+  render(); $('checkout').showModal();
+  $('syText').value = ''; syDraw();
+};
+syDraw();
+
+// ——— «Что берут соседи»: полка подписанных стаканов завсегдатаев. Видно, что пьют люди «как вы» именно в это время, — и взять так же ———
+(function () {
+  const NB = {
+    m: ['утром', 'к открытию', [
+      { n: 'Оля', s: 'медсестра, смена в 8:30', i: ['Капучино · большой · на овсяном'], t: 'Единственное место, где овсяное не горчит. Захожу по дороге — стакан уже стоит с моим именем.' },
+      { n: 'Миша', s: 'с 3-го этажа', i: ['Американо · + шот', 'Круассан'], t: 'Без шота я не человек. Круассан — потому что он ещё тёплый в 8:15.' },
+      { n: 'Ира', s: 'и такса Буся', i: ['Латте · ваниль'], t: 'Буся ждёт у двери, я забираю за 20 секунд. Мимо очереди — это про нас.' },
+      { n: 'Катя', s: 'пара в 9:00', i: ['Раф · карамель'], t: 'Выхожу в 8:40, раф ждёт на полке. Успеваю даже на первую парту.' },
+      { n: 'Тимур', s: 'ходит с 2014', i: ['Эспрессо · двойной'], t: 'Два глотка — и в метро. Бариста кивает, я киваю. Идеальное утро.' },
+      { n: 'Дед Саша', s: 'живёт во дворе', i: ['Чай · с лимоном', 'Пирожок с капустой'], t: 'Кофе мне доктор запретил. Пирожки — как у матери пекла, честное слово.' },
+    ]],
+    d: ['днём', 'в обед', [
+      { n: 'Лена', s: 'бухгалтерия напротив', i: ['Латте · на кокосовом', 'Морковный кекс'], t: 'Кекс делим на троих. Латте — не делю ни с кем.' },
+      { n: 'Артём', s: 'курьер', i: ['Американо · большой'], t: 'Между заказами, на бегу. Окошко на сайте — лучшее, что тут придумали.' },
+      { n: 'Нина Петровна', s: 'научил внук', i: ['Капучино', 'Синнабон'], t: 'Внук показал, как заказывать с телефона. Теперь хожу каждый день, и все меня знают.' },
+      { n: 'Дима', s: 'программист', i: ['Раф · лесной орех'], t: 'Заказываю прямо из созвона, пока говорят про спринт. К концу — уже готов.' },
+      { n: 'Серёжа', s: 'обед — 40 минут', i: ['Капучино · + шот · карамель'], t: 'Кофе с собой за 7 минут вместе с дорогой. Остальное — на шаурму.' },
+      { n: 'Аня', s: 'пишет диплом', i: ['Чай · зелёный'], t: 'Тихо, светло, розетка у окна. Чайник на два часа.' },
+    ]],
+    e: ['вечером', 'после работы', [
+      { n: 'Маша', s: 'после смены', i: ['Раф · ваниль', 'Синнабон'], t: 'Вечерняя витрина — мой маленький праздник. Синнабон за −30% вкуснее, проверено.' },
+      { n: 'Вика и Костя', s: 'вместе с 2019', i: ['Латте · на овсяном', 'Круассан'], t: 'Первое свидание было тут. С тех пор — каждую пятницу, один латте на двоих.' },
+      { n: 'Паша', s: 'после тренировки', i: ['Чай · с лимоном'], t: 'Бариста помнит, что без сахара. Мелочь, а приятно.' },
+      { n: 'Таня', s: 'не переносит лактозу', i: ['Капучино · безлактозное'], t: 'Безлактозное — и без лекций, без доплаты за лицо. Спасибо, ребята.' },
+      { n: 'Гоша', s: 'берёт домой', i: ['Американо'], t: 'Пока иду через двор, остывает ровно до нужного. Проверял с термометром.' },
+      { n: 'Рома', s: 'сова', i: ['Эспрессо', 'Морковный кекс'], t: 'Кекс на ужин. Никому не говорите.' },
+    ]],
+  };
+  // «Возьму как у …» — имя в родительном падеже
+  const GEN = { 'Оля': 'Оли', 'Миша': 'Миши', 'Ира': 'Иры', 'Катя': 'Кати', 'Тимур': 'Тимура', 'Дед Саша': 'деда Саши', 'Лена': 'Лены', 'Артём': 'Артёма',
+    'Нина Петровна': 'Нины Петровны', 'Дима': 'Димы', 'Серёжа': 'Серёжи', 'Аня': 'Ани', 'Маша': 'Маши', 'Вика и Костя': 'Вики и Кости', 'Паша': 'Паши',
+    'Таня': 'Тани', 'Гоша': 'Гоши', 'Рома': 'Ромы' };
+  Object.values(NB).forEach(([, , L]) => L.forEach(p => p.g = GEN[p.n] || p.n));
+  const shelf = $('nbShelf'), tabs = $('nbTabs');
+  const now = new Date(), [o, c] = hours(now), h = now.getHours() + now.getMinutes() / 60, open = h >= o && h < c;
+  const cur = !open ? 'm' : h < 12 ? 'm' : h < 17 ? 'd' : 'e';
+  let per = cur, pick = 0;
+  // сколько стаканов уже ушло с полки «С сайта» сегодня — растёт в течение дня
+  const seed = now.getDate() * 7 % 23;
+  const done = open ? Math.round((h - o) * (h - o < 2 ? 11 : 8) + seed) : 0;
+  $('nbCount').textContent = open ? `сегодня — ${done} ${plural(done, 'стакан', 'стакана', 'стаканов')}` : `вчера — ${96 + seed} ${plural(96 + seed, 'стакан', 'стакана', 'стаканов')}`;
+  $('nbSub').textContent = open ? 'подписанные стаканы тех, кто заказывает с сайта, — нажмите на любой' : 'мы закрыты — вот что обычно берут к открытию; заказать можно уже сейчас';
+  // свой стакан на полке: вы тоже заказывали — стоите среди соседей
+  let me = null;
+  try { const u = JSON.parse(localStorage.getItem(KEY)); if (u && u.items && u.items.length) {
+    const items = cleanItems(u.items); if (items.length) me = { n: myName() || 'Вы', s: u.n > 1 ? `берёте это ${u.n}-й раз` : 'ваш прошлый заказ', i: items.map(([x]) => x), q: items.map(([, q]) => q), t: 'Ваш обычный заказ. Одно касание — и он снова в корзине, бариста уже знает, как вы любите.', me: 1 };
+  } } catch (e) {}
+  const list = () => (me ? [me] : []).concat(NB[per][2]);
+  const cupOf = p => p.i.find(x => DRINKS[parse(x).base]) || p.i[0];
+  const qOf = (p, j) => p.q ? p.q[j] : 1;
+  const sumOf = p => p.i.reduce((s, x, j) => s + priceOf(x) * qOf(p, j), 0);
+  tabs.innerHTML = Object.entries(NB).map(([k, [t]]) => `<button type="button" role="tab" data-k="${k}">${t}${k === cur ? `<i>${open ? 'сейчас' : 'к открытию'}</i>` : ''}</button>`).join('');
+  tabs.querySelectorAll('button').forEach(b => b.onclick = () => { per = b.dataset.k; pick = me ? 1 : 0; draw(true); });
+  function draw(fresh) {
+    tabs.querySelectorAll('button').forEach(b => { const on = b.dataset.k === per; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    const L = list();
+    if (fresh) {
+      shelf.style.setProperty('--n', L.length);
+      shelf.innerHTML = L.map((p, i) => {
+        const side = p.i.find(x => BAKE[parse(x).base]);
+        return `<li style="--i:${i};--r:${((i * 41) % 9) - 4}deg"><button type="button" role="option" class="nb-cup${p.me ? ' me' : ''}" data-i="${i}" aria-label="${esc(p.n)}: ${esc(p.i.map(one).join(' и '))}">` +
+          `<span class="nb-art">${art(cupOf(p))}${side && side !== cupOf(p) ? `<span class="nb-side">${art(side, 1)}</span>` : ''}</span>` +
+          `<span class="nb-sleeve">${esc(p.n)}</span></button></li>`;
+      }).join('');
+      shelf.querySelectorAll('.nb-cup').forEach(b => b.onclick = () => { pick = +b.dataset.i; draw(); });
+    }
+    shelf.querySelectorAll('.nb-cup').forEach((b, i) => { b.classList.toggle('on', i === pick); b.setAttribute('aria-selected', i === pick); });
+    const p = L[pick] || L[0], n = $('nbNote');
+    n.classList.remove('in'); void n.offsetWidth; n.classList.add('in');
+    n.classList.toggle('me', !!p.me);
+    $('nbName').textContent = p.n; $('nbSince').textContent = p.s ? '· ' + p.s : '';
+    $('nbMsg').textContent = '«' + p.t + '»';
+    $('nbWhat').innerHTML = p.i.map((x, j) => `<span>${nice(x)}${qOf(p, j) > 1 ? ' ×' + qOf(p, j) : ''}</span>`).join('<em>+</em>') + `<b>${rub(sumOf(p))}</b>`;
+    const who = p.me ? 'Как в прошлый раз' : 'Возьму как у ' + p.g;
+    $('nbTake').textContent = `${who} · ${rub(sumOf(p))}`;
+    $('nbTune').hidden = !CUSTOM[parse(cupOf(p)).base];
+    const k = 3 + ([...p.n].reduce((s, ch) => s + ch.charCodeAt(0), 0) + seed) % 9; // «сколько раз так же взяли» — стабильно в течение дня
+    $('nbMine').innerHTML = p.me ? 'Ваш стакан на этой полке видите только вы — он хранится в этом телефоне.'
+      : `<b>${parse(cupOf(p)).base}</b> так же, как у ${esc(p.g)}, ${NB[per][1]} берут ~${k} ${plural(k, 'раз', 'раза', 'раз')} за день · оплата на месте`;
+  }
+  $('nbTake').onclick = () => {
+    const p = list()[pick]; if (!p) return;
+    p.i.forEach((x, j) => add(x, qOf(p, j)));
+    const b = shelf.querySelector('.nb-cup.on'); if (b) { b.classList.remove('took'); void b.offsetWidth; b.classList.add('took'); }
+    if (guest) { openHand(); return; }
+    toast(`${p.i.map(one).join(' + ')} — в корзине${p.me ? '' : ', как у ' + p.g}. Осталось выбрать время ↓`);
+  };
+  $('nbTune').onclick = () => {
+    const p = list()[pick]; if (!p) return;
+    const d = cupOf(p), { base, keys } = parse(d);
+    openCustom(base, keys.length ? keys : [''], false);
+    $('czHint').textContent = p.me ? 'Ваш прошлый — можно поменять' : `Как у ${p.g} — поменяйте что хотите`;
+    p.i.filter(x => BAKE[parse(x).base]).forEach(f => cz.pair.add(parse(f).base));
+    drawCustom();
+  };
+  draw(true);
+})();
+</script>
+</body>
+</html>

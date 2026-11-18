@@ -1,0 +1,77 @@
+body {
+  background: #ff00ff;
+  color: #00ff00;
+  font-family: "Comic Sans MS", "Comic Neue", cursive;
+  font-size: 15px;
+  margin: 3px;
+}
+
+h1 {
+  color: yellow;
+  font-family: "Times New Roman", serif;
+  text-decoration: underline;
+}
+
+h2 {
+  color: #0000ff;
+  background: #ffff00;
+  font-family: Impact, sans-serif;
+  text-align: center;
+  border: 4px dashed red;
+}
+
+.shapka {
+  background: #00ffff;
+}
+
+.tel {
+  color: red;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+marquee {
+  background: red;
+  color: yellow;
+  font-size: 20px;
+}
+
+.privet {
+  text-align: justify;
+  color: #ffffff;
+  width: 1100px;
+}
+
+.menu {
+  width: 1100px;
+  background: #ffffcc;
+  color: #990000;
+}
+
+.menu th {
+  background: #333333;
+  color: #ff9900;
+}
+
+.zakaz {
+  border: 6px double #00ff00;
+  background: #000080;
+  color: #ffff00;
+  width: 700px;
+  padding: 2px;
+}
+
+.karta {
+  border: 6px ridge orange;
+  background: #808000;
+  color: #ff00ff;
+  width: 900px;
+  margin-left: 140px;
+  padding: 2px;
+}
+
+.podval {
+  font-size: 10px;
+  color: #ffff00;
+  text-align: right;
+}

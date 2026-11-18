@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Иконка «Зёрнышка» для экрана телефона: стакан с собой, на крышке — зёрнышко.
+       Рисунок держится в центральных 80% — так его не обрежет круглая или «капельная» маска Android -->
+  <rect width="512" height="512" fill="#6b3e26"/>
+  <circle cx="256" cy="256" r="196" fill="#7a4930"/>
+  <path d="M168 196h176l-20 196a24 24 0 0 1-24 22h-88a24 24 0 0 1-24-22z" fill="#fffaf3"/>
+  <path d="M176 262h160l-6 60H182z" fill="#d9822b"/>
+  <rect x="152" y="168" width="208" height="34" rx="12" fill="#f3e6d3"/>
+  <path d="M184 168c4-22 18-32 72-32s68 10 72 32z" fill="#f3e6d3"/>
+  <g transform="rotate(-28 256 292)">
+    <ellipse cx="256" cy="292" rx="20" ry="28" fill="#2a1d15"/>
+    <path d="M256 266c-8 10-8 42 0 52" fill="none" stroke="#d9822b" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>
